@@ -1,0 +1,23 @@
+{
+  "name": "@jochlain/color",
+  "version": "1.0.0",
+  "description": "color utilities",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JochLAin/color.git"
+  },
+  "keywords": [
+    "jochlain",
+    "color"
+  ],
+  "author": "jochlain <jocelyn@faihy.fr>",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/JochLAin/color/issues"
+  },
+  "homepage": "https://github.com/JochLAin/color#readme"
+}
