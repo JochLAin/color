@@ -1,57 +1,78 @@
 import { HEX_REGEX, HSL_REGEX, HWB_REGEX, RGB_REGEX, NAMES } from "./constants";
 import { getValidValue } from "./helper";
-import { Color, CMYK, RGB, HSL, HWB } from "./types";
+import { Color, ColorInput, ColorOutput } from "./types";
 import compute from "./computer";
 
-export default (props: Color, format: string = 'rgb'): Color => {
+export default (props: ColorInput, format: string = 'rgb'): ColorOutput => {
     if (typeof props === 'number') return parseNumber(props);
     if (typeof props === 'string') return parseString(props);
     if (Array.isArray(props)) return parseArray(props, format);
 
-    // const red = props.red;
-    // const green = props.green;
-    // const blue = props.blue;
-    // const hue = props.hue;
-    // const saturation = props.saturation;
-    // const lightness = props.lightness;
-    // const whiteness = props.whiteness;
-    // const blackness = props.blackness;
+    const keys = Object.keys(props);
 
-    if (props.red && props.green && props.blue) return compute(parseRGB(props));
-    if (props.hue && props.saturation && props.lightness) return compute(parseHSL(props));
-    if (props.hue && props.whiteness && props.blackness) return compute(parseHWB(props));
+    if (['red', 'green', 'blue'].every((key) => keys.includes(key))) return compute(parseRGB(props));
+    if (['r', 'g', 'b'].every((key) => keys.includes(key))) return compute(parseRGB(props));
+
+    if (['hue', 'saturation', 'lightness'].every((key) => keys.includes(key))) return compute(parseHSL(props));
+    if (['h', 's', 'l'].every((key) => keys.includes(key))) return compute(parseHSL(props));
+
+    if (['hue', 'whiteness', 'blackness'].every((key) => keys.includes(key))) return compute(parseHWB(props));
+    if (['h', 'w', 'b'].every((key) => keys.includes(key))) return compute(parseHWB(props));
 
     return compute({ red: 0, blue: 0, green: 0 });
 };
 
-export const parseNumber = (props: number): Color => {
+export const parseNumber = (props: number): ColorOutput => {
     return compute(parseValue(props));
 };
 
-export const parseString = (props: string): Color => {
+export const parseValue = (props: number): ColorOutput => {
+    return {
+        value: getValidValue(props & 0xFFFFFF, 0, 0xFFFFFF)
+    };
+};
+
+export const parseString = (props: string): ColorOutput => {
     if (RGB_REGEX.test(props)) {
-        return compute(parseRGB(props));
+        return compute(parseStringRGB(props));
     }
     if (HSL_REGEX.test(props)) {
-        return compute(parseHSL(props));
+        return compute(parseStringHSL(props));
     }
     if (HWB_REGEX.test(props)) {
-        return compute(parseHWB(props));
+        return compute(parseStringHWB(props));
     }
     if (HEX_REGEX.test(props)) {
         const match = props.match(HEX_REGEX);
         if (match && [3, 4].includes(match[1].length)) {
             props = `#${match[1].split('').map((c) => `${c}${c}`).join('')}`;
         }
-        return compute(parseHEX(props));
+        return compute(parseStringHEX(props));
     }
     if (props in NAMES) {
-        return compute(parseName(props));
+        return compute(parseStringName(props));
     }
     throw new Error(`Unknown name or format for "${props}"`);
 };
 
-export const parseArray = (props: number[], format: string = 'rgb'): Color => {
+export const parseStringHEX = (props: string): ColorOutput => {
+    if (!/^#[\dA-Fa-f]{8}$/.test(props)) {
+        const alpha = getValidValue(Math.round(parseInt(props.substr(7, 2), 16) / 0xFF * 100), 0, 100);
+        if (alpha === 100) props = props.slice(0, -2);
+        else return { hex: props.toUpperCase(), alpha };
+    }
+    return { hex: props.toUpperCase() };
+};
+
+export const parseStringName = (props: string): ColorOutput => {
+    return Object.assign({ name: props }, parseStringHEX(NAMES[props]));
+};
+
+export const parseStringRGB = () => {
+
+};
+
+export const parseArray = (props: number[], format: string = 'rgb'): ColorOutput => {
     if (/^hsla?$/.test(format)) {
         return compute(parseHSL(props));
     }
@@ -61,16 +82,7 @@ export const parseArray = (props: number[], format: string = 'rgb'): Color => {
     return compute(parseRGB(props));
 };
 
-export const parseHEX = (props: string): { hex: string, alpha?: number } => {
-    if (!/^#[\dA-Fa-f]{8}$/.test(props)) {
-        const alpha = getValidValue(Math.round(parseInt(props.substr(7, 2), 16) / 0xFF * 100), 0, 100);
-        if (alpha === 100) props = props.slice(0, -2);
-        else return { hex: props.toUpperCase(), alpha };
-    }
-    return { hex: props.toUpperCase() };
-};
-
-export const parseHSL = (props: any): HSL => {
+export const parseHSL = (props: string|number[]|HSL|ShortcutHSL): HSL => {
     const type = typeof props;
     if (type === 'string') {
         if (!HSL_REGEX.test(props)) throw new Error(`HSL string must match with ${HSL_REGEX.toString()}`);
@@ -180,14 +192,4 @@ export const parseRGB = (props) => {
         };
     }
     throw new Error(`Value of type ${type} is not supported`);
-};
-
-export const parseName = (props) => {
-    return Object.assign({ name: props }, parseHEX(NAMES[props]));
-};
-
-export const parseValue = (props) => {
-    return {
-        value: getValidValue(props & 0xFFFFFF, 0, 0xFFFFFF)
-    };
 };
