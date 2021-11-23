@@ -1,24 +1,48 @@
-export type ColorInput = number | string | number[] | RGB | HSL | HWB | ShortcutRGB | ShortcutHSL | ShortcutHWB | ShortcutCMYK;
-export type ColorOutput = RGB | HSL | HWB | { value: number, alpha?: number } | { hex: string, alpha?: number };
+export type ColorInput = number | string | number[] | INT | HEX | RGB | sRGB | HSL | sHSL | HWB | sHWB | NCOL | sNCOL;
+export type ColorOutput = INT | HEX | RGB | HSL | CMYK | HWB | NCOL;
 
-export interface Color extends RGB, HSL, CMYK, HWB {
-    hex: string,
-    name: string,
-    nCol: string,
+export interface COLOR {
+    red?: number,
+    blue?: number,
+    green?: number,
+    hue?: number,
+    saturation?: number,
+    lightness?: number,
+    whiteness?: number,
+    blackness?: number,
+    cyan?: number,
+    magenta?: number,
+    yellow?: number,
+    black?: number,
+    alpha?: number,
+    hex?: string,
+    name?: string,
+    ncol?: string,
+    value?: number,
+}
+
+export interface INT {
     value: number,
+    alpha?: number,
+}
+
+export interface HEX {
+    hex: string,
+    name?: string,
+    alpha?: number,
 }
 
 export interface RGB {
     red: number,
-    blue: number,
     green: number,
+    blue: number,
     alpha?: number,
 }
 
-export interface ShortcutRGB {
+export interface sRGB {
     r: number,
-    b: number,
     g: number,
+    b: number,
     a?: number,
 }
 
@@ -29,7 +53,7 @@ export interface HSL {
     alpha?: number,
 }
 
-export interface ShortcutHSL {
+export interface sHSL {
     h: number,
     s: number,
     l: number,
@@ -43,7 +67,7 @@ export interface HWB {
     alpha?: number,
 }
 
-export interface ShortcutHWB {
+export interface sHWB {
     h: number,
     w: number,
     b: number,
@@ -58,10 +82,27 @@ export interface CMYK {
     alpha?: number,
 }
 
-export interface ShortcutCMYK {
+export interface sCMYK {
     c: number,
     m: number,
     y: number,
     k: number,
     a?: number,
 }
+
+export interface NCOL {
+    ncol: string,
+    whiteness: number,
+    blackness: number,
+    alpha?: number,
+}
+
+export interface sNCOL {
+    n: string,
+    w: number,
+    b: number,
+    a?: number,
+}
+
+export type COLOR_TYPE = INT | HEX | RGB | HSL | HWB | CMYK | NCOL;
+export type COLOR_INPUT = number | string | number[] | sRGB | sHSL | sHWB | sCMYK | sNCOL | COLOR_TYPE;

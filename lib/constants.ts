@@ -1,12 +1,36 @@
+import { COLOR } from "./types";
+
+const DEFAULT_COLOR: COLOR = {
+    alpha: 100,
+    red: 0,
+    green: 0,
+    blue: 0,
+    hue: 0,
+    saturation: 0,
+    lightness: 0,
+    whiteness: 0,
+    blackness: 100,
+    hex: '#000000',
+    value: 0,
+    ncol: 'R0',
+    name: 'blackness',
+    cyan: 0,
+    magenta: 0,
+    yellow: 0,
+    black: 100,
+};
+
+export default DEFAULT_COLOR;
+
 export const RGB_REGEX = /^rgba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
 export const HSL_REGEX = /^hsla?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+%?)\s*[,\s]\s*([\d.]+%?)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
 export const HWB_REGEX = /^hwba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+%?)\s*[,\s]\s*([\d.]+%?)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
 export const HEX_REGEX = /^#([0-9a-f]+)$/i;
 
-export const MAX_VALUE = 0xFFFFFF;
+export const HEX_MAX_VALUE = 0xFFFFFF;
 export const YIQ_THRESHOLD = 0.6;
-export const dark = true;
-export const light = false;
+export const DARK = true;
+export const LIGHT = false;
 
 export const NAMES = {
     aliceblue: "#F0F8FF",
