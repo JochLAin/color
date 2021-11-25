@@ -300,43 +300,43 @@ class ColorBase {
     }
 }
 
-export class ColorINT extends ColorBase {
+class ColorINT extends ColorBase {
     constructor(props: INT) {
         super(parseINT(props));
     }
 }
 
-export class ColorHEX extends ColorBase {
+class ColorHEX extends ColorBase {
     constructor(props: HEX) {
         super(parseHEX(props));
     }
 }
 
-export class ColorRGB extends ColorBase {
+class ColorRGB extends ColorBase {
     constructor(props: RGB) {
         super(parseRGB(props));
     }
 }
 
-export class ColorHSL extends ColorBase {
+class ColorHSL extends ColorBase {
     constructor(props: HSL) {
         super(parseHSL(props));
     }
 }
 
-export class ColorHWB extends ColorBase {
+class ColorHWB extends ColorBase {
     constructor(props: HWB) {
         super(parseHWB(props));
     }
 }
 
-export class ColorNCOL extends ColorBase {
+class ColorNCOL extends ColorBase {
     constructor(props: NCOL) {
         super(parseNCOL(props));
     }
 }
 
-export class ColorCMYK extends ColorBase {
+class ColorCMYK extends ColorBase {
     constructor(props: CMYK) {
         super(parseCMYK(props));
     }
@@ -352,3 +352,16 @@ export default class Color extends ColorBase {
         super(parsed);
     }
 }
+
+// type STATIC_METHODS ='get'|'set'|'add'|'subtract'|'multiply'|'divide'|'scale'|'invert'|'grayscale'|'opacify'|'transparentize'|'darken'|'lighten'|'desaturate'|'saturate'|'mix'|'hex'|'name'|'value'|'red'|'green'|'blue'|'hue'|'saturation'|'lightness'|'ncol'|'whiteness'|'blackness'|'cyan'|'magenta'|'yellow'|'black'|'alpha'|'rgb'|'hsl'|'hwb'|'toNumber'|'toString'|'toJSON';
+// const STATIC_KEYS: STATIC_METHODS[] = ['get','set','add','subtract','multiply','divide','scale','invert','grayscale','opacify','transparentize','darken','lighten','desaturate','saturate','mix','hex','name','value','red','green','blue','hue','saturation','lightness','ncol','whiteness','blackness','cyan','magenta','yellow','black','alpha','rgb','hsl','hwb','toNumber','toString','toJSON'];
+//
+// for (let idx = 0; idx < STATIC_KEYS.length; idx++) {
+//     const key = STATIC_KEYS[idx];
+//     Object.assign(Color, {
+//         [key]: (props: COLOR_INPUT, ...args: any[]): any => {
+//             const color = new Color(props);
+//             return color[key].apply(color, args);
+//         },
+//     });
+// }

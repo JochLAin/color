@@ -61,7 +61,7 @@ export const parseHEX = (props: HEX): HEX => {
 
 const parseName = (props: string): HEX => {
     if (props in NAMES) throw new Error(`Unknown name for "${props}"`);
-    return { ...parseHEX(NAMES[props]), name: props };
+    return { ...parseHEX({ hex: NAMES[props] }), name: props };
 };
 
 export const parseCMYK = (props: string | [number, number, number, number] | sCMYK | CMYK): CMYK => {

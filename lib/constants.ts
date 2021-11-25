@@ -22,17 +22,17 @@ const DEFAULT_COLOR: COLOR = {
 
 export default DEFAULT_COLOR;
 
-export const RGB_REGEX = /^rgba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
-export const HSL_REGEX = /^hsla?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+%?)\s*[,\s]\s*([\d.]+%?)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
-export const HWB_REGEX = /^hwba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+%?)\s*[,\s]\s*([\d.]+%?)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
-export const HEX_REGEX = /^#([0-9a-f]+)$/i;
+export const RGB_REGEX: RegExp = /^rgba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
+export const HSL_REGEX: RegExp = /^hsla?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+%?)\s*[,\s]\s*([\d.]+%?)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
+export const HWB_REGEX: RegExp = /^hwba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+%?)\s*[,\s]\s*([\d.]+%?)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
+export const HEX_REGEX: RegExp = /^#([0-9a-f]+)$/i;
 
-export const HEX_MAX_VALUE = 0xFFFFFF;
-export const YIQ_THRESHOLD = 0.6;
-export const DARK = true;
-export const LIGHT = false;
+export const HEX_MAX_VALUE: number = 0xFFFFFF;
+export const YIQ_THRESHOLD: number = 0.6;
+export const DARK: boolean = true;
+export const LIGHT: boolean = false;
 
-export const NAMES = {
+export const NAMES: { [key: string]: string } = {
     aliceblue: "#F0F8FF",
     antiquewhite: "#FAEBD7",
     aqua: "#0FF",
@@ -184,4 +184,4 @@ export const NAMES = {
     yellowgreen: "#9ACD32",
 };
 
-export const HEX_NAMES = Object.entries(NAMES).reduce((accu, [name, value]) => ({ ...accu, [value]: name }), {});
+export const HEX_NAMES: { [key: string]: string } = Object.entries(NAMES).reduce((accu, [name, value]) => ({ ...accu, [value]: name }), {});
