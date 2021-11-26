@@ -36,11 +36,13 @@ export default (props: ColorInput, format: string = 'rgb'): [ColorOutput, string
     if (isHSL(props)) return [getValidHSL(props as HSL), 'hsl'];
     if (isHWB(props)) return [getValidHWB(props as HWB), 'hwb'];
 
+    if (isHEX(props)) return [parseHEX(props as HEX), 'hex'];
+
     return [parseHEX({ hex: '#000000' }), 'hex'];
 };
 
 export const parseINT = (props: INT): INT => {
-    return { value: props.value & 0xFFFFFF };
+    return { value: props.value & 0xFFFFFF, alpha: 100 };
 };
 
 export const parseHEX = (props: HEX): HEX => {
@@ -50,17 +52,17 @@ export const parseHEX = (props: HEX): HEX => {
         props.hex = `#${match[1].split('').map((c) => `${c}${c}`).join('')}`;
     }
 
-    if (!/^#[\dA-Fa-f]{8}$/.test(props.hex)) {
+    if (/^#[\dA-Fa-f]{8}$/.test(props.hex)) {
         const alpha = getValidAlpha(Math.round(parseInt(props.hex.substr(7, 2), 16) / 0xFF * 100));
         let { hex } = props;
         if (alpha === 100) hex = hex.slice(0, -2);
         return { hex: hex.toUpperCase(), alpha };
     }
-    return { hex: props.hex.toUpperCase() };
+    return { hex: props.hex.toUpperCase(), alpha: 100 };
 };
 
 const parseName = (props: string): HEX => {
-    if (props in NAMES) throw new Error(`Unknown name for "${props}"`);
+    if (props in Object.keys(NAMES)) throw new Error(`Unknown name for "${props}"`);
     return { ...parseHEX({ hex: NAMES[props] }), name: props };
 };
 

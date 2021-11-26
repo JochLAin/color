@@ -22,9 +22,9 @@ const DEFAULT_COLOR: COLOR = {
 
 export default DEFAULT_COLOR;
 
-export const RGB_REGEX: RegExp = /^rgba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
-export const HSL_REGEX: RegExp = /^hsla?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+%?)\s*[,\s]\s*([\d.]+%?)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
-export const HWB_REGEX: RegExp = /^hwba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+%?)\s*[,\s]\s*([\d.]+%?)\s*([,/]\s*([\d.]+%?)\s*)?\)$/i;
+export const RGB_REGEX: RegExp = /^rgba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*([,/]\s*([\d.]+)%?\s*)?\)$/i;
+export const HSL_REGEX: RegExp = /^hsla?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)%?\s*[,\s]\s*([\d.]+)%?\s*([,/]\s*([\d.]+)%?\s*)?\)$/i;
+export const HWB_REGEX: RegExp = /^hwba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)%?\s*[,\s]\s*([\d.]+)%?\s*([,/]\s*([\d.]+)%?\s*)?\)$/i;
 export const HEX_REGEX: RegExp = /^#([0-9a-f]+)$/i;
 
 export const HEX_MAX_VALUE: number = 0xFFFFFF;

@@ -1,44 +1,7 @@
+import { HUEtoRGB, RGBtoHUE, HUEtoNCOL } from "./converters/basic";
 import { HEX_NAMES, HEX_REGEX } from "./constants";
 import { getValidCMYK, getValidHSL, getValidHWB, getValidRGB } from "./validators";
 import { CMYK, HEX, HSL, HWB, INT, NCOL, RGB } from "./types";
-
-const HUEtoRGBChannel = (hue: number, tmp1: number, tmp2: number): number => {
-    hue += 6; hue %= 6;
-    if (hue < 1) return (tmp1 - tmp2) * hue + tmp2;
-    if (hue < 3) return tmp1;
-    if (hue < 4) return (tmp1 - tmp2) * (4 - hue) + tmp2;
-    return tmp2;
-};
-
-const HUEtoNCOL = (hue: number): string => {
-    hue %= 360;
-    if (hue < 60) return `R${(hue / 0.6)}`;
-    if (hue < 120) return `Y${((hue - 60) / 0.6)}`;
-    if (hue < 180) return `G${((hue - 120) / 0.6)}`;
-    if (hue < 240) return `C${((hue - 180) / 0.6)}`;
-    if (hue < 300) return `B${((hue - 240) / 0.6)}`;
-    if (hue < 360) return `M${((hue - 300) / 0.6)}`;
-
-    return '';
-};
-
-const RGBtoHUE = (props: RGB, min: number, max: number): number => {
-    let hue: number = ((): number => {
-        if (max.toFixed(5) === min.toFixed(5)) return 0;
-        switch (max) {
-            case props.red: return (props.green - props.blue) / (max - min);
-            case props.green: return (props.blue - props.red) / (max - min) + 2.0;
-            case props.blue: return (props.red - props.green) / (max - min) + 4.0;
-        }
-        return 0;
-    })();
-
-    if (Number.isNaN(Number(hue))) hue = 0;
-    hue *= 60;
-    if (hue < 0) hue += 360;
-
-    return hue % 360;
-};
 
 export const HEXtoINT = (props: HEX): INT => {
     return { value: parseInt(props.hex.substr(1), 16) & 0xFFFFFF };
@@ -47,6 +10,10 @@ export const HEXtoINT = (props: HEX): INT => {
 export const RGBtoINT = (props: RGB): INT => {
     const value = (Math.round(props.red) << 16) + (Math.round(props.green) << 8) + Math.round(props.blue);
     return { value: value & 0xFFFFFF };
+};
+
+export const HSLtoINT = (props: HSL): INT => {
+    return HEXtoINT(HSLtoHEX(props));
 };
 
 const HEXtoNAME = (props: HEX): HEX => {
@@ -117,9 +84,9 @@ export const HSLtoRGB = (props: HSL): RGB => {
     const tmp1 = lightness <= 0.5 ? (lightness * (1 + saturation)) : (lightness + saturation - lightness * saturation);
     const tmp2 = 2 * lightness - tmp1;
     return getValidRGB({
-        red: HUEtoRGBChannel(hue + 2, tmp1, tmp2) * 0xFF,
-        green: HUEtoRGBChannel(hue, tmp1, tmp2) * 0xFF,
-        blue: HUEtoRGBChannel(hue - 2, tmp1, tmp2) * 0xFF,
+        red: HUEtoRGB(hue + 2, tmp1, tmp2) * 0xFF,
+        green: HUEtoRGB(hue, tmp1, tmp2) * 0xFF,
+        blue: HUEtoRGB(hue - 2, tmp1, tmp2) * 0xFF,
     });
 };
 
@@ -156,6 +123,14 @@ export const CMYKtoRGB = (props: CMYK): RGB => {
         green: 0xFF - ((Math.min(1, magenta * (1 - black) + black)) * 0xFF),
         blue: 0xFF - ((Math.min(1, yellow * (1 - black) + black)) * 0xFF),
     });
+};
+
+export const INTtoHSL = (props: INT): HSL => {
+    return RGBtoHSL(INTtoRGB(props));
+};
+
+export const HEXtoHSL = (props: HEX): HSL => {
+    return RGBtoHSL(HEXtoRGB(props));
 };
 
 export const RGBtoHSL = (props: RGB, hue?: number): HSL => {
@@ -223,6 +198,10 @@ export const RGBtoHWB = (props: RGB, hue?: number): HWB => {
     });
 };
 
+export const HSLtoHWB = (props: HSL): HWB => {
+    return RGBtoHWB(HSLtoRGB(props));
+};
+
 export const RGBtoCMYK = (props: RGB): CMYK => {
     let { red, green, blue } = props;
     red /= 0xFF; green /= 0xFF; blue /= 0xFF;
@@ -244,4 +223,22 @@ export const RGBtoCMYK = (props: RGB): CMYK => {
         yellow: (1.0 - blue - black) / max * 100,
         black: black * 100,
     });
+};
+
+export const RGBtoNCOL = (props: RGB): NCOL => {
+    const hwb = RGBtoHWB(props);
+    return {
+        ncol: HUEtoNCOL(hwb.hue),
+        whiteness: hwb.whiteness,
+        blackness: hwb.blackness,
+    };
+};
+
+export const HSLtoNCOL = (props: HSL): NCOL => {
+    const hwb = HSLtoHWB(props);
+    return {
+        ncol: HUEtoNCOL(hwb.hue),
+        whiteness: hwb.whiteness,
+        blackness: hwb.blackness,
+    };
 };

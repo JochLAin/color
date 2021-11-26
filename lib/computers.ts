@@ -1,17 +1,21 @@
 import {
+    HEXtoHSL,
     HEXtoINT,
     HEXtoRGB,
     HSLtoHEX,
+    HSLtoINT,
     HSLtoRGB,
     HWBtoRGB,
     INTtoHEX,
     INTtoRGB,
+    INTtoHSL,
     NCOLtoHWB,
     RGBtoCMYK,
     RGBtoHEX,
     RGBtoHSL,
     RGBtoHWB,
-    RGBtoINT
+    RGBtoINT,
+    RGBtoNCOL,
 } from "./converters";
 import { COLOR, COLOR_TYPE, CMYK, HEX, HSL, HWB, INT, NCOL, RGB } from "./types";
 import { isCMYK, isHEX, isHSL, isHWB, isINT, isNCOL, isRGB } from "./utils";
@@ -39,8 +43,8 @@ export const computeHEX = (props: COLOR_TYPE): COLOR => {
 
 export const computeHSL = (props: COLOR_TYPE): COLOR => {
     if (isHSL(props)) return props;
-    // if (isINT(props)) return INTtoHSL(props as INT);
-    // if (isHEX(props)) return HEXtoHSL(props as HEX);
+    if (isINT(props)) return INTtoHSL(props as INT);
+    if (isHEX(props)) return HEXtoHSL(props as HEX);
     if (isRGB(props)) return RGBtoHSL(props as RGB);
     // if (isHWB(props)) return HWBtoHSL(props as HWB);
     // if (isNCOL(props)) return NCOLtoHSL(props as NCOL);
@@ -63,7 +67,7 @@ export const computeINT = (props: COLOR_TYPE): COLOR => {
     if (isINT(props)) return props;
     if (isHEX(props)) return HEXtoINT(props as HEX);
     if (isRGB(props)) return RGBtoINT(props as RGB);
-    // if (isHSL(props)) return HSLtoINT(props as HSL);
+    if (isHSL(props)) return HSLtoINT(props as HSL);
     // if (isHWB(props)) return HWBtoINT(props as HWB);
     // if (isNCOL(props)) return NCOLtoINT(props as NCOL);
     // if (isCMYK(props)) return CMYKtoINT(props as CMYK);
@@ -71,7 +75,8 @@ export const computeINT = (props: COLOR_TYPE): COLOR => {
 };
 
 export const computeNCOL = (props: COLOR_TYPE): COLOR => {
-    return props;
+    if (isRGB(props)) return RGBtoNCOL(props as RGB);
+    throw new Error('Unable to compute ncol value');
 };
 
 export const computeRGB = (props: COLOR_TYPE): COLOR => {

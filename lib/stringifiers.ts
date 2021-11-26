@@ -1,4 +1,9 @@
-import { HSL, HWB, RGB } from "./types";
+import { CMYK, HSL, HWB, RGB } from "./types";
+
+export const stringifyCMYK = (props: CMYK): string => {
+    const { cyan, magenta, yellow, black } = props;
+    return `cmyk(${Math.round(cyan)}%, ${Math.round(magenta)}%, ${Math.round(yellow)}%, ${Math.round(black)}%)`;
+};
 
 export const stringifyHSL = (props: HSL): string => {
     const { hue, saturation, lightness, alpha = 100 } = props;
@@ -13,9 +18,9 @@ export const stringifyHWB = (props: HWB): string => {
     const { hue, whiteness, blackness, alpha = 100 } = props;
 
     if (alpha !== 100) {
-        return `hsla(${Math.round(hue)}, ${Math.round(whiteness)}%, ${Math.round(blackness)}%, ${Math.round(alpha)}%)`;
+        return `hwba(${Math.round(hue)}, ${Math.round(whiteness)}%, ${Math.round(blackness)}%, ${Math.round(alpha)}%)`;
     }
-    return `hsl(${Math.round(hue)}, ${Math.round(whiteness)}%, ${Math.round(blackness)}%)`;
+    return `hwb(${Math.round(hue)}, ${Math.round(whiteness)}%, ${Math.round(blackness)}%)`;
 };
 
 export const stringifyRGB = (props: RGB): string => {
