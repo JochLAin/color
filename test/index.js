@@ -1,34 +1,10 @@
 const logger = require('@jochlain/logger');
-const sass = require('node-sass');
+const sass = require('sass');
 const paint = require('../dist/cjs');
-
-// ((value) => {
-//     const color = paint(value);
-//     // console.log(color.hex());
-//     // console.log(color.rgb());
-//     // console.log(color.red());
-//     // console.log(color.green());
-//     // console.log(color.blue());
-//     // console.log(color.hsl());
-//     // console.log(color.hue());
-//     // console.log(color.saturation());
-//     // console.log(color.lightness());
-//     // console.log(color.hwb());
-//     // console.log(color.whiteness());
-//     // console.log(color.blackness());
-//     // console.log(color.cmyk());
-//     // console.log(color.cyan());
-//     // console.log(color.magenta());
-//     // console.log(color.yellow());
-//     // console.log(color.black());
-//     // console.log(color.ncol());
-//     console.log(color.toJSON());
-//     console.log(color.grayscale().toJSON());
-// })('#75F4CA');
 
 const NB_SHADE_BY_ITERATION = 10;
 const PERCENT_STEP = 10;
-//
+
 class ErrorColor extends Error {
     constructor(title, from, css, color) {
         super();
@@ -42,6 +18,9 @@ class ErrorColor extends Error {
         this.message += `\n| Expected | ${this.css.hex()} | ${this.css.rgb().padEnd(18, ' ')} | ${this.css.hsl().padEnd(18, ' ')} |`;
         this.message += `\n|${Array(11).join('-')}|${Array(10).join('-')}|${Array(21).join('-')}|${Array(21).join('-')}|`;
         this.message += `\n| Got      | ${this.color.hex()} | ${this.color.rgb().padEnd(18, ' ')} | ${this.color.hsl().padEnd(18, ' ')} |`;
+        this.message += `\n`;
+        this.message += `\n RGB test: ${this.css.rgb() === this.color.rgb()}`;
+        this.message += `\n HSL test: ${this.css.hsl() === this.color.hsl()}`;
     }
 }
 
