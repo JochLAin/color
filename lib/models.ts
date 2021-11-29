@@ -8,6 +8,8 @@ import getValidValue from "./validators";
 
 type PropertyMath = 'red'|'green'|'blue'|'hue'|'saturation'|'lightness'|'whiteness'|'blackness'|'cyan'|'magenta'|'yellow'|'black'|'alpha'|'value';
 
+const PRECISION = 10;
+
 class ColorBase {
     #props: COLOR;
 
@@ -25,8 +27,8 @@ class ColorBase {
 
     clone = () => new ColorBase(this.#props as COLOR_TYPE);
     eq = (color: COLOR_INPUT, format?: string) => this.value() === Color.create(color, format).value();
-    hasTransparency = () => this.alpha() !== 100;
-    isTransparent = () => this.alpha() === 0;
+    hasTransparency = () => this.alpha() !== 100.0;
+    isTransparent = () => this.alpha() === 0.0;
     isDark = () => this.yiq === DARK;
     isLight = () => this.yiq === LIGHT;
 
@@ -57,7 +59,7 @@ class ColorBase {
     }
 
     scale = (prop: PropertyMath, value: number): ColorBase => {
-        return this.set(prop, this.get(prop) * getValidValue(value) / 100);
+        return this.set(prop, this.get(prop) * getValidValue(value) / 100.0);
     }
 
     spin = (angle: number): ColorBase => {
@@ -65,7 +67,7 @@ class ColorBase {
     }
 
     complement = (): ColorBase => {
-        return this.spin(180);
+        return this.spin(180.0);
     }
 
     invert = (): ColorBase => {
@@ -73,7 +75,7 @@ class ColorBase {
     }
 
     grayscale = (): ColorBase => {
-        return this.set('saturation', 0);
+        return this.set('saturation', 0.0);
     }
 
     opacify = (value: number): ColorBase => {
@@ -100,9 +102,9 @@ class ColorBase {
         return this.add('saturation', value);
     }
 
-    mix = (color: COLOR_INPUT | Color, weight: number = 50) => {
+    mix = (color: COLOR_INPUT | Color, weight: number = 50.0) => {
         if (!(color instanceof Color)) color = Color.create(color as COLOR_INPUT);
-        weight = getValidValue(weight) / 100;
+        weight = getValidValue(weight) / 100.0;
         const red = this.red() as number;
         const green = this.green() as number;
         const blue = this.blue() as number;
@@ -360,13 +362,15 @@ class ColorCMYK extends ColorBase {
 }
 
 export default class Color extends ColorBase {
-    static create(props: COLOR_INPUT, format?: string): Color {
+    static create(props: COLOR_INPUT|ColorBase, format?: string): Color {
+        if (props instanceof ColorBase) {
+            return new Color(props.toString());
+        }
         return new Color(props, format);
     }
 
     constructor(props: COLOR_INPUT, format?: string) {
         const [parsed] = parse(props, format);
-        console.log(props, parsed);
         super(parsed);
     }
 }
