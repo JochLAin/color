@@ -42,7 +42,20 @@ const looper = (title, callback) => () => {
     });
 };
 
-const compare = (from, css, color, test) => {
+const compare = (from, css, color) => {
+    const hasError = (from, to) => {
+        const _from = from.toJSON();
+        const _to = to.toJSON();
+
+        if (_from.red < (_to.red - 1) || _from.red > (_to.red + 1)) return 'red';
+        if (_from.green < (_to.green - 1) || _from.green > (_to.green + 1)) return 'green';
+        if (_from.blue < (_to.blue - 1) || _from.blue > (_to.blue + 1)) return 'blue';
+        if (_from.hue < (_to.hue - 1) || _from.hue > (_to.hue + 1)) return 'hue';
+        if (_from.saturation < (_to.saturation - 1) || _from.saturation > (_to.saturation + 1)) return 'saturation';
+        if (_from.lightness < (_to.lightness - 1) || _from.lightness > (_to.lightness + 1)) return 'lightness';
+        return null;
+    };
+
     return new Promise((resolve) => {
         sass.render({
             data: `$color: ${css};\n\nbody { color: $color; }`,
@@ -52,7 +65,9 @@ const compare = (from, css, color, test) => {
             resolve(paint(color));
         });
     }).then((code) => {
-        if (!test(color, code)) {
+        const field = hasError(color, code);
+        if (field) {
+            console.log(field, color.toJSON(), code.toJSON());
             throw new ErrorColor(css, from, code, color);
         }
     });
@@ -64,67 +79,56 @@ module.exports = () => {
             color,
             color.rgb(),
             paint(color.rgb()),
-            (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         )))
         .then(looper('Read HSL', (color) => compare(
             color,
             color.hsl(),
             paint(color.hsl()),
-            (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         )))
         .then(looper('Complement', (color) => compare(
             color,
             `complement(${color})`,
             color.complement(),
-            (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         )))
         .then(looper('Invert', (color, idx) => compare(
             color,
             `invert(${color.hex()})`,
             color.invert(),
-            (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         )))
         .then(looper('Niveau de gris', (color, idx) => compare(
             color,
             `grayscale(${color.hex()})`,
             color.grayscale(),
-            (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         )))
         .then(looper('Saturation', (color, idx) => compare(
             color,
             `saturate(${color.hex()}, ${idx}%)`,
             color.saturate(idx),
-            (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         )))
         .then(looper('Désaturation', (color, idx) => compare(
             color,
             `desaturate(${color.hex()}, ${idx}%)`,
             color.desaturate(idx),
-            (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         )))
         .then(looper('Lighten', (color, idx) => compare(
             color,
             `lighten(${color.hex()}, ${idx}%)`,
             color.lighten(idx),
-            (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         )))
         .then(looper('Darken', (color, idx) => compare(
             color,
             `darken(${color.hex()}, ${idx}%)`,
             color.darken(idx),
-            (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         )))
         // .then(looper('Mix white', (color, idx) => compare(
         //     color,
         //     `mix(${color.hex()}, #FFF, ${idx}%)`,
         //     paint.mix('#FFF', color, idx),
-        //     (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         // )))
         // .then(looper('Mix black', (color, idx) => compare(
         //     color,
         //     `mix(${color.hex()}, #000, ${idx}%)`,
         //     paint.mix('#000', color, idx),
-        //     (color1, color2) => color1.rgb() === color2.rgb() || color1.hsl() === color2.hsl(),
         // )))
     ;
 };
