@@ -5,24 +5,65 @@ const paint = require('../dist/cjs');
 const NB_SHADE_BY_ITERATION = 10;
 const PERCENT_STEP = 10;
 
-class ErrorColor extends Error {
-    constructor(title, from, css, color) {
-        super();
-        this.from = paint(from);
-        this.css = paint(css);
-        this.color = paint(color);
-
-        this.message = `Error on ${title}`;
-        this.message += `\n| From     | ${this.from.hex()} | ${this.from.rgb().padEnd(18, ' ')} | ${this.from.hsl().padEnd(18, ' ')} |`;
-        this.message += `\n|${Array(11).join('-')}|${Array(10).join('-')}|${Array(21).join('-')}|${Array(21).join('-')}|`;
-        this.message += `\n| Expected | ${this.css.hex()} | ${this.css.rgb().padEnd(18, ' ')} | ${this.css.hsl().padEnd(18, ' ')} |`;
-        this.message += `\n|${Array(11).join('-')}|${Array(10).join('-')}|${Array(21).join('-')}|${Array(21).join('-')}|`;
-        this.message += `\n| Got      | ${this.color.hex()} | ${this.color.rgb().padEnd(18, ' ')} | ${this.color.hsl().padEnd(18, ' ')} |`;
-        this.message += `\n`;
-        this.message += `\n RGB test: ${this.css.rgb() === this.color.rgb()}`;
-        this.message += `\n HSL test: ${this.css.hsl() === this.color.hsl()}`;
-    }
-}
+module.exports = () => {
+    return Promise.resolve()
+        .then(looper('Read RGB', (color) => compare(
+            color.rgb(),
+            color,
+            paint(color.rgb()),
+        )))
+        .then(looper('Read HSL', (color) => compare(
+            color.hsl(),
+            color,
+            paint(color.hsl()),
+        )))
+        .then(looper('Complement', (color) => compare(
+            `complement(${color.hex()})`,
+            color,
+            color.complement(),
+        )))
+        .then(looper('Invert', (color) => compare(
+            `invert(${color.hex()})`,
+            color,
+            color.invert(),
+        )))
+        .then(looper('Niveau de gris', (color) => compare(
+            `grayscale(${color.hex()})`,
+            color,
+            color.grayscale(),
+        )))
+        .then(looper('Saturation', (color, idx) => compare(
+            `saturate(${color.hex()}, ${idx}%)`,
+            color,
+            color.saturate(idx),
+        )))
+        .then(looper('Désaturation', (color, idx) => compare(
+            `desaturate(${color.hex()}, ${idx}%)`,
+            color,
+            color.desaturate(idx),
+        )))
+        .then(looper('Lighten', (color, idx) => compare(
+            `lighten(${color.hex()}, ${idx}%)`,
+            color,
+            color.lighten(idx),
+        )))
+        .then(looper('Darken', (color, idx) => compare(
+            `darken(${color.hex()}, ${idx}%)`,
+            color,
+            color.darken(idx),
+        )))
+        // .then(looper('Mix white', (color, idx) => compare(
+        //     color,
+        //     `mix(${color.hex()}, #FFF, ${idx}%)`,
+        //     paint.mix('#FFF', color, idx),
+        // )))
+        // .then(looper('Mix black', (color, idx) => compare(
+        //     color,
+        //     `mix(${color.hex()}, #000, ${idx}%)`,
+        //     paint.mix('#000', color, idx),
+        // )))
+    ;
+};
 
 const looper = (title, callback) => () => {
     let promise = Promise.resolve().then(() => {
@@ -42,7 +83,7 @@ const looper = (title, callback) => () => {
     });
 };
 
-const compare = (from, css, color) => {
+const compare = (scss, from, value) => {
     const hasError = (from, to) => {
         const _from = from.toJSON();
         const _to = to.toJSON();
@@ -53,85 +94,41 @@ const compare = (from, css, color) => {
         if (_from.hue < (_to.hue - 1) || _from.hue > (_to.hue + 1)) return 'hue';
         if (_from.saturation < (_to.saturation - 1) || _from.saturation > (_to.saturation + 1)) return 'saturation';
         if (_from.lightness < (_to.lightness - 1) || _from.lightness > (_to.lightness + 1)) return 'lightness';
+
         return null;
     };
 
     return new Promise((resolve) => {
         sass.render({
-            data: `$color: ${css};\n\nbody { color: $color; }`,
+            data: `$color: ${scss};\n\nbody { color: $color; }`,
         }, function (error, results) {
             if (error) throw error;
-            const color = results.css.toString().match(/color: ([^;]+);/)[1];
-            resolve(paint(color));
+            const [, color] = results.css.toString().match(/color: ([^;]+);/);
+            resolve(color);
         });
-    }).then((code) => {
-        const field = hasError(color, code);
-        if (field) {
-            console.log(field, color.toJSON(), code.toJSON());
-            throw new ErrorColor(css, from, code, color);
-        }
+    }).then((color) => {
+        const expected = paint(color);
+        const field = hasError(expected, value);
+        if (field) throw new ErrorColor(scss, color, from, expected, value);
     });
 };
 
-module.exports = () => {
-    return Promise.resolve()
-        .then(looper('Read RGB', (color) => compare(
-            color,
-            color.rgb(),
-            paint(color.rgb()),
-        )))
-        .then(looper('Read HSL', (color) => compare(
-            color,
-            color.hsl(),
-            paint(color.hsl()),
-        )))
-        .then(looper('Complement', (color) => compare(
-            color,
-            `complement(${color})`,
-            color.complement(),
-        )))
-        .then(looper('Invert', (color, idx) => compare(
-            color,
-            `invert(${color.hex()})`,
-            color.invert(),
-        )))
-        .then(looper('Niveau de gris', (color, idx) => compare(
-            color,
-            `grayscale(${color.hex()})`,
-            color.grayscale(),
-        )))
-        .then(looper('Saturation', (color, idx) => compare(
-            color,
-            `saturate(${color.hex()}, ${idx}%)`,
-            color.saturate(idx),
-        )))
-        .then(looper('Désaturation', (color, idx) => compare(
-            color,
-            `desaturate(${color.hex()}, ${idx}%)`,
-            color.desaturate(idx),
-        )))
-        .then(looper('Lighten', (color, idx) => compare(
-            color,
-            `lighten(${color.hex()}, ${idx}%)`,
-            color.lighten(idx),
-        )))
-        .then(looper('Darken', (color, idx) => compare(
-            color,
-            `darken(${color.hex()}, ${idx}%)`,
-            color.darken(idx),
-        )))
-        // .then(looper('Mix white', (color, idx) => compare(
-        //     color,
-        //     `mix(${color.hex()}, #FFF, ${idx}%)`,
-        //     paint.mix('#FFF', color, idx),
-        // )))
-        // .then(looper('Mix black', (color, idx) => compare(
-        //     color,
-        //     `mix(${color.hex()}, #000, ${idx}%)`,
-        //     paint.mix('#000', color, idx),
-        // )))
-    ;
-};
+class ErrorColor extends Error {
+    constructor(scss, color, from, expected, value) {
+        super();
+        const formats = [['hex', 9], ['rgb', 18], ['hsl', 20]];
+        const colors = [['From', from], ['Expected', expected], ['Got', value]];
+
+        const title = `Error on ${scss} => ${color}`;
+        const separator = `|${''.padEnd(10, '-')}${formats.reduce((accu, [, length]) => `${accu}|${''.padEnd(length + 2, '-')}`, '')}|`;
+        const [a, b, c] = colors.map(([label, color]) => `| ${label.padEnd(8, ' ')}${formats.reduce((accu, [method, length]) => `${accu} | ${color[method]().padEnd(length, ' ')}`, '')} |`);
+        const border = `|${''.padEnd(formats.reduce((accu, [, length]) => accu + length + 2, formats.length + 10), '-')}|`;
+        this.message = `${title}\n${border}\n${a}\n${separator}\n${b}\n${separator}\n${c}\n${border}`;
+
+        // this.message += `\n RGB test: ${expected.rgb() === value.rgb()}`;
+        // this.message += `\n HSL test: ${expected.hsl() === value.hsl()}`;
+    }
+}
 
 if (require.main === module) {
     module.exports().catch((err) => {
