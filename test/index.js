@@ -84,18 +84,10 @@ const looper = (title, callback) => () => {
 };
 
 const compare = (scss, from, value) => {
-    const hasError = (from, to) => {
-        const _from = from.toJSON();
-        const _to = to.toJSON();
-
-        if (_from.red < (_to.red - 1) || _from.red > (_to.red + 1)) return 'red';
-        if (_from.green < (_to.green - 1) || _from.green > (_to.green + 1)) return 'green';
-        if (_from.blue < (_to.blue - 1) || _from.blue > (_to.blue + 1)) return 'blue';
-        if (_from.hue < (_to.hue - 1) || _from.hue > (_to.hue + 1)) return 'hue';
-        if (_from.saturation < (_to.saturation - 1) || _from.saturation > (_to.saturation + 1)) return 'saturation';
-        if (_from.lightness < (_to.lightness - 1) || _from.lightness > (_to.lightness + 1)) return 'lightness';
-
-        return null;
+    const hasError = (expected, value) => {
+        return value.hex() !== expected.hex()
+            && value.hsl() !== expected.hsl()
+            && value.rgb() !== expected.rgb();
     };
 
     return new Promise((resolve) => {
@@ -106,20 +98,19 @@ const compare = (scss, from, value) => {
             const [, color] = results.css.toString().match(/color: ([^;]+);/);
             resolve(color);
         });
-    }).then((color) => {
-        const expected = paint(color);
-        const field = hasError(expected, value);
-        if (field) throw new ErrorColor(scss, color, from, expected, value);
+    }).then((css) => {
+        const color = paint(css);
+        if (hasError(color, value)) throw new ErrorColor(scss, css, from, color, value);
     });
 };
 
 class ErrorColor extends Error {
-    constructor(scss, color, from, expected, value) {
+    constructor(scss, css, from, expected, value) {
         super();
         const formats = [['hex', 9], ['rgb', 18], ['hsl', 20]];
         const colors = [['From', from], ['Expected', expected], ['Got', value]];
 
-        const title = `Error on ${scss} => ${color}`;
+        const title = `Error on ${scss} => ${css.toUpperCase()}`;
         const separator = `|${''.padEnd(10, '-')}${formats.reduce((accu, [, length]) => `${accu}|${''.padEnd(length + 2, '-')}`, '')}|`;
         const [a, b, c] = colors.map(([label, color]) => `| ${label.padEnd(8, ' ')}${formats.reduce((accu, [method, length]) => `${accu} | ${color[method]().padEnd(length, ' ')}`, '')} |`);
         const border = `|${''.padEnd(formats.reduce((accu, [, length]) => accu + length + 2, formats.length + 10), '-')}|`;

@@ -159,6 +159,7 @@ class ColorBase {
     saturation = (saturation?: number): number | ColorBase => {
         if (!isHSL(this.#props)) this.#computeHSL();
         if (saturation === undefined) return this.#props.saturation as number;
+        if (saturation === 0) return new ColorHSL({ ...this.#props, hue: 0.0, saturation } as HSL);
         return new ColorHSL({ ...this.#props, saturation } as HSL);
     }
 
