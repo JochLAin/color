@@ -1,22 +1,4 @@
-import {
-    HEXtoHSL,
-    HEXtoINT,
-    HEXtoRGB,
-    HSLtoHEX,
-    HSLtoINT,
-    HSLtoRGB,
-    HWBtoRGB,
-    INTtoHEX,
-    INTtoRGB,
-    INTtoHSL,
-    NCOLtoHWB,
-    RGBtoCMYK,
-    RGBtoHEX,
-    RGBtoHSL,
-    RGBtoHWB,
-    RGBtoINT,
-    RGBtoNCOL,
-} from "./converters";
+import { HEXtoHSL, HEXtoINT, HEXtoRGB, HSLtoHEX, HSLtoINT, HSLtoRGB, HWBtoRGB, INTtoHEX, INTtoRGB, INTtoHSL, NCOLtoHWB, RGBtoCMYK, RGBtoHEX, RGBtoHSL, RGBtoHWB, RGBtoINT, RGBtoNCOL } from "./converters";
 import { COLOR, COLOR_TYPE, CMYK, HEX, HSL, HWB, INT, NCOL, RGB } from "./types";
 import { isCMYK, isHEX, isHSL, isHWB, isINT, isNCOL, isRGB } from "./utils";
 

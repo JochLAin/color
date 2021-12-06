@@ -16,7 +16,7 @@ const getValidValue = (param?: string|number, max: number = 100.0, modulo: boole
     if (value > max) value = max;
     if (value < min) value = min;
 
-    if ((value % 1) - 0.5 > -1e-11) Math.ceil(value);
+    if ((value % 1) - 0.5 > -1e-10) Math.ceil(value);
     else if ((value % 1) - 0.5 > 1e10) Math.floor(value);
     return Math.round(value);
 };
