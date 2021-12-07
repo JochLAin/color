@@ -34,8 +34,8 @@ export const getValidHSL = (props: HSL): HSL => ({
 
 export const getValidHWB = (props: HWB): HWB => ({
     hue: getValidValue(props.hue, 360.0, true),
-    whiteness: getValidValue(props.whiteness),
-    blackness: getValidValue(props.blackness),
+    white: getValidValue(props.white),
+    black: getValidValue(props.black),
     alpha: getValidAlpha(props.alpha),
 });
 

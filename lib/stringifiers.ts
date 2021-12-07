@@ -15,12 +15,12 @@ export const stringifyHSL = (props: HSL): string => {
 };
 
 export const stringifyHWB = (props: HWB): string => {
-    const { hue, whiteness, blackness, alpha = 100 } = props;
+    const { hue, white, black, alpha = 100 } = props;
 
     if (alpha !== 100) {
-        return `hwba(${Math.round(hue)}, ${Math.round(whiteness)}%, ${Math.round(blackness)}%, ${Math.round(alpha)}%)`;
+        return `hwba(${Math.round(hue)}, ${Math.round(white)}%, ${Math.round(black)}%, ${Math.round(alpha)}%)`;
     }
-    return `hwb(${Math.round(hue)}, ${Math.round(whiteness)}%, ${Math.round(blackness)}%)`;
+    return `hwb(${Math.round(hue)}, ${Math.round(white)}%, ${Math.round(black)}%)`;
 };
 
 export const stringifyRGB = (props: RGB): string => {

@@ -2,23 +2,22 @@ export type ColorInput = number | string | number[] | INT | HEX | RGB | sRGB | H
 export type ColorOutput = INT | HEX | RGB | HSL | CMYK | HWB | NCOL;
 
 export interface COLOR {
+    name?: string,
+    value?: number,
+    hex?: string,
     red?: number,
     blue?: number,
     green?: number,
     hue?: number,
-    saturation?: number,
-    lightness?: number,
-    whiteness?: number,
-    blackness?: number,
+    ncol?: string,
     cyan?: number,
     magenta?: number,
     yellow?: number,
+    white?: number,
     black?: number,
+    saturation?: number,
+    lightness?: number,
     alpha?: number,
-    hex?: string,
-    name?: string,
-    ncol?: string,
-    value?: number,
 }
 
 export interface INT {
@@ -62,8 +61,8 @@ export interface sHSL {
 
 export interface HWB {
     hue: number,
-    whiteness: number,
-    blackness: number,
+    white: number,
+    black: number,
     alpha?: number,
 }
 
@@ -92,8 +91,8 @@ export interface sCMYK {
 
 export interface NCOL {
     ncol: string,
-    whiteness: number,
-    blackness: number,
+    white: number,
+    black: number,
     alpha?: number,
 }
 

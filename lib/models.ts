@@ -6,7 +6,7 @@ import { COLOR, COLOR_TYPE, COLOR_INPUT, CMYK, HEX, HSL, HWB, INT, NCOL, RGB } f
 import { isCMYK, isHEX, isHSL, isHWB, isINT, isNCOL, isRGB } from "./utils";
 import getValidValue from "./validators";
 
-type PropertyMath = 'red'|'green'|'blue'|'hue'|'saturation'|'lightness'|'whiteness'|'blackness'|'cyan'|'magenta'|'yellow'|'black'|'alpha'|'value';
+type PropertyMath = 'red'|'green'|'blue'|'hue'|'saturation'|'lightness'|'white'|'black'|'cyan'|'magenta'|'yellow'|'black'|'alpha'|'value';
 
 const PRECISION = 10;
 
@@ -120,15 +120,21 @@ class ColorBase {
         });
     }
 
+    name = (name?: string): string | ColorBase => {
+        if (name === undefined) return this.#props.name as string;
+        return new ColorHEX({ ...this.#props, name, hex: NAMES[name] } as HEX);
+    }
+
+    value = (value?: number): number | ColorBase => {
+        if (!isINT(this.#props)) this.#computeINT();
+        if (value === undefined) return this.#props.value as number;
+        return new ColorINT({ ...this.#props, value } as INT);
+    }
+
     hex = (hex?: string): string | ColorBase => {
         if (!isHEX(this.#props)) this.#computeHEX();
         if (hex === undefined) return this.#props.hex as string;
         return new ColorHEX({ ...this.#props, hex } as HEX);
-    }
-
-    name = (name?: string): string | ColorBase => {
-        if (name === undefined) return this.#props.name as string;
-        return new ColorHEX({ ...this.#props, name, hex: NAMES[name] } as HEX);
     }
 
     red = (red?: number): number | ColorBase => {
@@ -156,31 +162,10 @@ class ColorBase {
         return new ColorHSL({ ...this.#props, hue } as HSL);
     }
 
-    saturation = (saturation?: number): number | ColorBase => {
-        if (!isHSL(this.#props)) this.#computeHSL();
-        if (saturation === undefined) return this.#props.saturation as number;
-        if (saturation === 0) return new ColorHSL({ ...this.#props, hue: 0.0, saturation } as HSL);
-        return new ColorHSL({ ...this.#props, saturation } as HSL);
-    }
-
-    lightness = (lightness?: number): number | ColorBase => {
-        if (!isHSL(this.#props)) this.#computeHSL();
-        if (lightness === undefined) return this.#props.lightness as number;
-        return new ColorHSL({ ...this.#props, lightness } as HSL);
-    }
-
-    whiteness = (whiteness?: number): number | ColorBase => {
-        if (!isHWB(this.#props) && !isNCOL(this.#props)) this.#computeHWB();
-        if (whiteness === undefined) return this.#props.whiteness as number;
-        if (isNCOL(this.#props)) return new ColorNCOL({ ...this.#props, whiteness } as NCOL);
-        return new ColorHWB({ ...this.#props, whiteness } as HWB);
-    }
-
-    blackness = (blackness?: number): number | ColorBase => {
-        if (!isHWB(this.#props) && !isNCOL(this.#props)) this.#computeHWB();
-        if (blackness === undefined) return this.#props.blackness as number;
-        if (isNCOL(this.#props)) return new ColorNCOL({ ...this.#props, blackness } as NCOL);
-        return new ColorHWB({ ...this.#props, blackness } as HWB);
+    ncol = (ncol?: string): string | ColorBase => {
+        if (!isNCOL(this.#props)) this.#computeNCOL();
+        if (ncol === undefined) return this.#props.ncol as string;
+        return new ColorNCOL({ ...this.#props, ncol } as NCOL);
     }
 
     cyan = (cyan?: number): number | ColorBase => {
@@ -201,16 +186,31 @@ class ColorBase {
         return new ColorCMYK({ ...this.#props, yellow } as CMYK);
     }
 
-    black = (black?: number): number | ColorBase => {
-        if (!isCMYK(this.#props)) this.#computeCMYK();
-        if (black === undefined) return this.#props.black as number;
-        return new ColorCMYK({ ...this.#props, black } as CMYK);
+    white = (white?: number): number | ColorBase => {
+        if (!isHWB(this.#props) && !isNCOL(this.#props)) this.#computeHWB();
+        if (white === undefined) return this.#props.white as number;
+        if (isNCOL(this.#props)) return new ColorNCOL({ ...this.#props, white } as NCOL);
+        return new ColorHWB({ ...this.#props, white } as HWB);
     }
 
-    ncol = (ncol?: string): string | ColorBase => {
-        if (!isNCOL(this.#props)) this.#computeNCOL();
-        if (ncol === undefined) return this.#props.ncol as string;
-        return new ColorNCOL({ ...this.#props, ncol } as NCOL);
+    black = (black?: number): number | ColorBase => {
+        if (!isHWB(this.#props) && !isNCOL(this.#props)) this.#computeHWB();
+        if (black === undefined) return this.#props.black as number;
+        if (isNCOL(this.#props)) return new ColorNCOL({ ...this.#props, black } as NCOL);
+        return new ColorHWB({ ...this.#props, black } as HWB);
+    }
+
+    saturation = (saturation?: number): number | ColorBase => {
+        if (!isHSL(this.#props)) this.#computeHSL();
+        if (saturation === undefined) return this.#props.saturation as number;
+        if (saturation === 0) return new ColorHSL({ ...this.#props, hue: 0.0, saturation } as HSL);
+        return new ColorHSL({ ...this.#props, saturation } as HSL);
+    }
+
+    lightness = (lightness?: number): number | ColorBase => {
+        if (!isHSL(this.#props)) this.#computeHSL();
+        if (lightness === undefined) return this.#props.lightness as number;
+        return new ColorHSL({ ...this.#props, lightness } as HSL);
     }
 
     alpha = (alpha?: number): number | ColorBase => {
@@ -225,12 +225,6 @@ class ColorBase {
 
         this.#computeRGB();
         return new ColorRGB({ ...this.#props, alpha: alpha } as RGB);
-    }
-
-    value = (value?: number): number | ColorBase => {
-        if (!isINT(this.#props)) this.#computeINT();
-        if (value === undefined) return this.#props.value as number;
-        return new ColorINT({ ...this.#props, value } as INT);
     }
 
     cmyk = (value?: string | CMYK): string | ColorBase => {
@@ -376,8 +370,8 @@ export default class Color extends ColorBase {
     }
 }
 
-// type STATIC_METHODS ='get'|'set'|'add'|'subtract'|'multiply'|'divide'|'scale'|'invert'|'grayscale'|'opacify'|'transparentize'|'darken'|'lighten'|'desaturate'|'saturate'|'mix'|'hex'|'name'|'value'|'red'|'green'|'blue'|'hue'|'saturation'|'lightness'|'ncol'|'whiteness'|'blackness'|'cyan'|'magenta'|'yellow'|'black'|'alpha'|'rgb'|'hsl'|'hwb'|'toNumber'|'toString'|'toJSON';
-// const STATIC_KEYS: STATIC_METHODS[] = ['get','set','add','subtract','multiply','divide','scale','invert','grayscale','opacify','transparentize','darken','lighten','desaturate','saturate','mix','hex','name','value','red','green','blue','hue','saturation','lightness','ncol','whiteness','blackness','cyan','magenta','yellow','black','alpha','rgb','hsl','hwb','toNumber','toString','toJSON'];
+// type STATIC_METHODS ='get'|'set'|'add'|'subtract'|'multiply'|'divide'|'scale'|'invert'|'grayscale'|'opacify'|'transparentize'|'darken'|'lighten'|'desaturate'|'saturate'|'mix'|'hex'|'name'|'value'|'red'|'green'|'blue'|'hue'|'saturation'|'lightness'|'ncol'|'white'|'black'|'cyan'|'magenta'|'yellow'|'black'|'alpha'|'rgb'|'hsl'|'hwb'|'toNumber'|'toString'|'toJSON';
+// const STATIC_KEYS: STATIC_METHODS[] = ['get','set','add','subtract','multiply','divide','scale','invert','grayscale','opacify','transparentize','darken','lighten','desaturate','saturate','mix','hex','name','value','red','green','blue','hue','saturation','lightness','ncol','white','black','cyan','magenta','yellow','black','alpha','rgb','hsl','hwb','toNumber','toString','toJSON'];
 //
 // for (let idx = 0; idx < STATIC_KEYS.length; idx++) {
 //     const key = STATIC_KEYS[idx];

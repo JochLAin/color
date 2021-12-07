@@ -34,8 +34,8 @@ export const isSHSL = (props: any): boolean => {
 
 export const isHWB = (props: any): boolean => {
     return 'hue' in props && props.hue !== undefined
-        && 'whiteness' in props && props.whiteness !== undefined
-        && 'blackness' in props && props.blackness !== undefined
+        && 'white' in props && props.white !== undefined
+        && 'black' in props && props.black !== undefined
     ;
 };
 
@@ -52,8 +52,8 @@ export const isINT = (props: any): boolean => {
 
 export const isNCOL = (props: any): boolean => {
     return 'ncol' in props && props.ncol !== undefined
-        && 'whiteness' in props && props.whiteness !== undefined
-        && 'blackness' in props && props.blackness !== undefined
+        && 'white' in props && props.white !== undefined
+        && 'black' in props && props.black !== undefined
     ;
 };
 
