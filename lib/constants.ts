@@ -2,20 +2,23 @@ import { COLOR } from "./types";
 
 const DEFAULT_COLOR: COLOR = {
     name: 'black',
-    value: 0,
+    int: 0,
     hex: '#000000',
     red: 0,
     green: 0,
     blue: 0,
-    hue: 0,
-    ncol: 'R0',
     cyan: 0,
     magenta: 0,
     yellow: 0,
     white: 0,
     black: 100,
-    saturation: 0,
+    hue: 0,
+    ncol: 'R0',
+    saturationHSI: 0,
+    saturationHSL: 0,
+    saturationHSV: 0,
     lightness: 0,
+    value: 0,
     alpha: 100,
 };
 

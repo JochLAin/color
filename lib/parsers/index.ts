@@ -1,5 +1,5 @@
 import { HEX_REGEX, HSL_REGEX, HWB_REGEX, NAMES, RGB_REGEX } from "../constants";
-import { INT, HEX, RGB, sRGB, HSL, sHSL, HWB, sHWB, NCOL, sNCOL, CMYK, sCMYK } from "../types";
+import { COLOR, COLOR_INPUT, HEX, RGB, sRGB, HSL, sHSL, HWB, sHWB, NCOL, sNCOL, CMYK, sCMYK } from "../types";
 import { isHEX, isHSL, isHWB, isRGB, isSHSL, isSHWB, isSRGB } from "../utils";
 import parseHSL, { parseArray as parseArrayHSL, parseObject as parseObjectHSL, parseString as parseStringHSL } from "./hsl";
 import parseHWB, { parseArray as parseArrayHWB, parseObject as parseObjectHWB, parseString as parseStringHWB } from "./hwb";
@@ -7,14 +7,11 @@ import parseRGB, { parseArray as parseArrayRGB, parseObject as parseObjectRGB, p
 import parseHEX from "./hex";
 import parseINT from "./int";
 
-type Input = number | string | number[] | INT | HEX | RGB | sRGB | HSL | sHSL | HWB | sHWB | CMYK | sCMYK | NCOL | sNCOL;
-type Output = INT | HEX | RGB | HSL | CMYK | HWB | NCOL;
-
-export default (props: Input, format: string = 'rgb'): [Output, string] => {
-    if (typeof props === 'number') return [parseINT({ value: props }), 'number'];
+export default (props: COLOR_INPUT, format: string = 'rgb'): [COLOR, string] => {
+    if (typeof props === 'number') return [parseINT({ int: props }), 'number'];
 
     if (typeof props === 'string') {
-        return ((props: string): [Output, string] => {
+        return ((props: string): [COLOR, string] => {
             if (HEX_REGEX.test(props)) return [parseHEX({ hex: props }), 'hex'];
             if (RGB_REGEX.test(props)) return [parseStringRGB(props), 'rgb'];
             if (HSL_REGEX.test(props)) return [parseStringHSL(props), 'hsl'];
@@ -25,7 +22,7 @@ export default (props: Input, format: string = 'rgb'): [Output, string] => {
     }
 
     if (Array.isArray(props)) {
-        return ((props): [Output, string] => {
+        return ((props): [COLOR, string] => {
             if (/^hsla?$/.test(format)) return [parseArrayHSL(props as [number, number, number, number?]), 'hsl'];
             if (/^hwba?$/.test(format)) return [parseArrayHWB(props as [number, number, number, number?]), 'hwb'];
             return [parseArrayRGB(props as [number, number, number, number?]), 'rgb'];
@@ -46,6 +43,7 @@ export default (props: Input, format: string = 'rgb'): [Output, string] => {
 export const parseCMYK = (props: string | [number, number, number, number] | sCMYK | CMYK): CMYK => {
     return props as CMYK;
 };
+
 export const parseNCOL = (props: string | [string, number, number] | sNCOL | NCOL): NCOL => {
     return props as NCOL;
 };
