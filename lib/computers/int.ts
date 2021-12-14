@@ -4,11 +4,11 @@ import { isHEX, isHSL, isINT, isRGB } from "../utils";
 
 export default (props: COLOR): COLOR => {
     if (isINT(props)) return props;
-    if (isHEX(props)) return hex2int(props as HEX);
-    if (isRGB(props)) return rgb2int(props as RGB);
-    if (isHSL(props)) return hsl2int(props as HSL);
-    // if (isHWB(props)) return HWBtoINT(props as HWB);
-    // if (isNCOL(props)) return NCOLtoINT(props as NCOL);
-    // if (isCMYK(props)) return CMYKtoINT(props as CMYK);
+    if (isHEX(props)) return hex2int(props);
+    if (isRGB(props)) return rgb2int(props);
+    if (isHSL(props)) return hsl2int(props);
+    // if (isHWB(props)) return HWBtoINT(props);
+    // if (isNCOL(props)) return NCOLtoINT(props);
+    // if (isCMYK(props)) return CMYKtoINT(props);
     throw new Error('Unable to compute number value');
 };

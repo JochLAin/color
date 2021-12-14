@@ -1,8 +1,8 @@
-import { HSL, RGB } from "../types";
+import { COLOR, HSL, RGB } from "../types";
 import { getValidHSL } from "../validators";
 import rgb2hue from "./rgb2hue";
 
-export default (props: RGB, hue?: number): HSL => {
+export default (props: COLOR & RGB, hue?: number): HSL => {
     let { red, green, blue } = props;
     red /= 255.0; green /= 255.0; blue /= 255.0;
 

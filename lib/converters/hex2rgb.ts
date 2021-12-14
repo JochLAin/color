@@ -1,8 +1,8 @@
-import { HEX, RGB } from "../types";
 import { HEX_REGEX } from "../constants";
+import { COLOR, HEX, RGB } from "../types";
 import { getValidRGB } from "../validators";
 
-export default (props: HEX): RGB => {
+export default (props: COLOR & HEX): RGB => {
     const match = props.hex.match(HEX_REGEX);
     if (!match) {
         return getValidRGB({ red: 0.0, green: 0.0, blue: 0.0 });

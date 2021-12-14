@@ -1,4 +1,4 @@
-import { HSL, RGB } from "../types";
+import { COLOR, HSL, RGB } from "../types";
 import { getValidRGB } from "../validators";
 
 export const hue2rgb = (hue: number, tmp1: number, tmp2: number): number => {
@@ -10,7 +10,7 @@ export const hue2rgb = (hue: number, tmp1: number, tmp2: number): number => {
     return tmp2;
 };
 
-export default (props: HSL): RGB => {
+export default (props: COLOR & HSL): RGB => {
     let { hue, saturation, lightness } = props;
     hue /= 60; saturation /= 100.0; lightness /= 100.0;
 

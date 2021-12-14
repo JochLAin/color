@@ -1,7 +1,7 @@
-import { HWB, NCOL } from "../types";
+import { COLOR, HWB, NCOL } from "../types";
 import { getValidHWB } from "../validators";
 
-export default (props: NCOL): HWB => {
+export default (props: COLOR & NCOL): HWB => {
     let { ncol, white, black } = props;
     if (!Number.isNaN(Number(String(ncol).substr(0, 1)))) return { hue: Number(ncol), white, black };
 

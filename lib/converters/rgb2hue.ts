@@ -1,6 +1,6 @@
-import { RGB } from "../types";
+import { COLOR, RGB } from "../types";
 
-export default (props: RGB, min: number, max: number): number => {
+export default (props: COLOR & RGB, min: number, max: number): number => {
     const delta = max - min;
     let hue: number = ((): number => {
         if (max.toFixed(10) === min.toFixed(10)) return 0.0;

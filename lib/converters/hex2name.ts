@@ -1,7 +1,7 @@
 import { HEX_NAMES } from "../constants";
-import { HEX } from "../types";
+import { COLOR, HEX } from "../types";
 
-export default (props: HEX): HEX => {
+export default (props: COLOR & HEX): HEX => {
     if (props.hex in HEX_NAMES) {
         return { ...props, name: HEX_NAMES[props.hex] };
     }

@@ -1,8 +1,8 @@
-import { HSL, NCOL } from "../types";
+import { COLOR, HSL, NCOL } from "../types";
 import hue2ncol from "./hue2ncol";
 import hsl2hwb from "./hsl2hwb";
 
-export default (props: HSL): NCOL => {
+export default (props: COLOR & HSL): NCOL => {
     const hwb = hsl2hwb(props);
     return {
         ncol: hue2ncol(hwb.hue),
