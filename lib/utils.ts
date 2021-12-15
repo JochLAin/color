@@ -1,3 +1,34 @@
+export const getChannelRGBFromHSI = (
+    idx: number,
+    hue: number,
+    saturation_hsi: number,
+    intensity: number,
+): number => {
+    const k = (idx + hue / 30) % 12;
+    return 0;
+};
+
+export const getChannelRGBFromHSL = (
+    idx: number,
+    hue: number,
+    saturation_hsl: number,
+    lightness: number,
+): number => {
+    const k = (idx + hue / 30) % 12;
+    const a = saturation_hsl * Math.min(lightness, 1 - lightness);
+    return lightness - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+};
+
+export const getChannelRGBFromHSV = (
+    idx: number,
+    hue: number,
+    saturation_hsv: number,
+    brightness: number,
+): number => {
+    const k = (idx + hue / 60) % 6;
+    return brightness - brightness * saturation_hsv * Math.max(0, Math.min(k, 4 - k, 1));
+};
+
 export const isCMYK = (props: any): boolean => {
     return 'cyan' in props && props.cyan !== undefined
         && 'magenta' in props && props.magenta !== undefined
@@ -34,8 +65,8 @@ export const isSHSL = (props: any): boolean => {
 
 export const isHWB = (props: any): boolean => {
     return 'hue' in props && props.hue !== undefined
-        && 'whiteness' in props && props.whiteness !== undefined
-        && 'blackness' in props && props.blackness !== undefined
+        && 'white' in props && props.white !== undefined
+        && 'black' in props && props.black !== undefined
     ;
 };
 
@@ -52,8 +83,8 @@ export const isINT = (props: any): boolean => {
 
 export const isNCOL = (props: any): boolean => {
     return 'ncol' in props && props.ncol !== undefined
-        && 'whiteness' in props && props.whiteness !== undefined
-        && 'blackness' in props && props.blackness !== undefined
+        && 'white' in props && props.white !== undefined
+        && 'black' in props && props.black !== undefined
     ;
 };
 

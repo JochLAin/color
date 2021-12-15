@@ -1,0 +1,10 @@
+export { default as computeCMYK } from "./cmyk";
+export { default as computeHCL } from "./hcl";
+export { default as computeHEX } from "./hex";
+export { default as computeHSI } from "./hsi";
+export { default as computeHSL } from "./hsl";
+export { default as computeHSV } from "./hsv";
+export { default as computeHWB } from "./hwb";
+export { default as computeINT } from "./int";
+export { default as computeNCOL } from "./ncol";
+export { default as computeRGB } from "./rgb";

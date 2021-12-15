@@ -1,23 +1,25 @@
 import { COLOR } from "./types";
 
 const DEFAULT_COLOR: COLOR = {
-    alpha: 100,
+    name: 'black',
+    int: 0,
+    hex: '#000000',
     red: 0,
     green: 0,
     blue: 0,
-    hue: 0,
-    saturation: 0,
-    lightness: 0,
-    whiteness: 0,
-    blackness: 100,
-    hex: '#000000',
-    value: 0,
-    ncol: 'R0',
-    name: 'blackness',
     cyan: 0,
     magenta: 0,
     yellow: 0,
+    white: 0,
     black: 100,
+    hue: 0,
+    ncol: 'R0',
+    saturationHSI: 0,
+    saturationHSL: 0,
+    saturationHSV: 0,
+    lightness: 0,
+    value: 0,
+    alpha: 100,
 };
 
 export default DEFAULT_COLOR;
@@ -40,7 +42,7 @@ export const NAMES: { [key: string]: string } = {
     azure: "#F0FFFF",
     beige: "#F5F5DC",
     bisque: "#FFE4C4",
-    blackness: "#000",
+    black: "#000",
     blanchedalmond: "#FFEBCD",
     blue: "#00F",
     blueviolet: "#8A2BE2",
@@ -184,4 +186,5 @@ export const NAMES: { [key: string]: string } = {
     yellowgreen: "#9ACD32",
 };
 
+// Reversed key-value of NAMES
 export const HEX_NAMES: { [key: string]: string } = Object.entries(NAMES).reduce((accu, [name, value]) => ({ ...accu, [value]: name }), {});

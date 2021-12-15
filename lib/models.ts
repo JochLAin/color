@@ -1,104 +1,107 @@
-import { computeCMYK, computeHEX, computeHSL, computeHWB, computeINT, computeNCOL, computeRGB } from "./computers";
+import { computeCMYK, computeHEX, computeHCL, computeHSI, computeHSL, computeHSV, computeHWB, computeINT, computeNCOL, computeRGB } from "./computers";
 import {DARK, HEX_MAX_VALUE, LIGHT, NAMES, YIQ_THRESHOLD} from "./constants";
 import parse, { parseCMYK, parseHEX, parseHSL, parseHWB, parseINT, parseNCOL, parseRGB } from "./parsers";
 import { stringifyCMYK, stringifyHSL, stringifyHWB, stringifyRGB } from "./stringifiers";
-import { COLOR, COLOR_TYPE, COLOR_INPUT, CMYK, HEX, HSL, HWB, INT, NCOL, RGB } from "./types";
+import { COLOR, COLOR_INPUT, CMYK, HEX, HSL, HWB, INT, NCOL, RGB, PROPERTY_MATH } from "./types";
 import { isCMYK, isHEX, isHSL, isHWB, isINT, isNCOL, isRGB } from "./utils";
 import getValidValue from "./validators";
 
-type PropertyMath = 'red'|'green'|'blue'|'hue'|'saturation'|'lightness'|'whiteness'|'blackness'|'cyan'|'magenta'|'yellow'|'black'|'alpha'|'value';
-
 const PRECISION = 10;
 
-class ColorBase {
+class Color {
     #props: COLOR;
 
-    constructor(props: COLOR_TYPE) {
+    constructor(props: COLOR) {
         this.#props = props;
     }
 
-    #computeCMYK = () => this.#props = { ...this.#props, ...computeCMYK(this.#props as COLOR_TYPE) };
-    #computeHEX = () => this.#props = { ...this.#props, ...computeHEX(this.#props as COLOR_TYPE) };
-    #computeHSL = () => this.#props = { ...this.#props, ...computeHSL(this.#props as COLOR_TYPE) };
-    #computeHWB = () => this.#props = { ...this.#props, ...computeHWB(this.#props as COLOR_TYPE) };
-    #computeINT = () => this.#props = { ...this.#props, ...computeINT(this.#props as COLOR_TYPE) };
-    #computeNCOL = () => this.#props = { ...this.#props, ...computeNCOL(this.#props as COLOR_TYPE) };
-    #computeRGB = () => this.#props = { ...this.#props, ...computeRGB(this.#props as COLOR_TYPE) };
+    #computeCMYK = () => this.#props = { ...this.#props, ...computeCMYK(this.#props as COLOR) };
+    #computeHEX = () => this.#props = { ...this.#props, ...computeHEX(this.#props as COLOR) };
+    #computeHCL = () => this.#props = { ...this.#props, ...computeHCL(this.#props as COLOR) };
+    #computeHSI = () => this.#props = { ...this.#props, ...computeHSI(this.#props as COLOR) };
+    #computeHSL = () => this.#props = { ...this.#props, ...computeHSL(this.#props as COLOR) };
+    #computeHSV = () => this.#props = { ...this.#props, ...computeHSV(this.#props as COLOR) };
+    #computeHWB = () => this.#props = { ...this.#props, ...computeHWB(this.#props as COLOR) };
+    #computeINT = () => this.#props = { ...this.#props, ...computeINT(this.#props as COLOR) };
+    #computeNCOL = () => this.#props = { ...this.#props, ...computeNCOL(this.#props as COLOR) };
+    #computeRGB = () => this.#props = { ...this.#props, ...computeRGB(this.#props as COLOR) };
 
-    clone = () => new ColorBase(this.#props as COLOR_TYPE);
-    eq = (color: COLOR_INPUT, format?: string) => this.value() === Color.create(color, format).value();
+    clone = () => new Color(this.#props as COLOR);
+    eq = (color: COLOR_INPUT, format?: string) => this.int() === ColorProxy.create(color, format).int();
     hasTransparency = () => this.alpha() !== 100.0;
     isTransparent = () => this.alpha() === 0.0;
     isDark = () => this.yiq === DARK;
     isLight = () => this.yiq === LIGHT;
 
-    get = (prop: PropertyMath): number => {
-        if (!(this[prop] instanceof Function)) return 0;
-        return this[prop]() as number;
-    }
+    get = (prop: PROPERTY_MATH): number => {
+        const field = Reflect.get(this, prop);
+        if (!(field instanceof Function)) return 0;
+        return field() as number;
+    };
 
-    set = (prop: PropertyMath, value: number): ColorBase => {
-        if (!(this[prop] instanceof Function)) return this;
-        return this[prop](value) as ColorBase;
-    }
+    set = (prop: PROPERTY_MATH, value: number): Color => {
+        const field = Reflect.get(this, prop);
+        if (!(field instanceof Function)) return this;
+        return field(value) as Color;
+    };
 
-    add = (prop: PropertyMath, value: number): ColorBase => {
+    add = (prop: PROPERTY_MATH, value: number): Color => {
         return this.set(prop, this.get(prop) + value);
     }
 
-    subtract = (prop: PropertyMath, value: number): ColorBase => {
+    subtract = (prop: PROPERTY_MATH, value: number): Color => {
         return this.set(prop, this.get(prop) - value);
     }
 
-    multiply = (prop: PropertyMath, value: number): ColorBase => {
+    multiply = (prop: PROPERTY_MATH, value: number): Color => {
         return this.set(prop, this.get(prop) * value);
     }
 
-    divide = (prop: PropertyMath, value: number): ColorBase => {
+    divide = (prop: PROPERTY_MATH, value: number): Color => {
         return this.set(prop, this.get(prop) / value);
     }
 
-    scale = (prop: PropertyMath, value: number): ColorBase => {
+    scale = (prop: PROPERTY_MATH, value: number): Color => {
         return this.set(prop, this.get(prop) * getValidValue(value) / 100.0);
     }
 
-    spin = (angle: number): ColorBase => {
+    spin = (angle: number): Color => {
         return this.add('hue', angle);
     }
 
-    complement = (): ColorBase => {
+    complement = (): Color => {
         return this.spin(180.0);
     }
 
-    invert = (): ColorBase => {
+    invert = (): Color => {
         return this.set('value', this.get('value') ^ HEX_MAX_VALUE);
     }
 
-    grayscale = (): ColorBase => {
+    grayscale = (): Color => {
         return this.set('saturation', 0.0);
     }
 
-    opacify = (value: number): ColorBase => {
+    opacify = (value: number): Color => {
         return this.subtract('alpha', value);
     }
 
-    transparentize = (value: number): ColorBase => {
+    transparentize = (value: number): Color => {
         return this.add('alpha', value);
     }
 
-    darken = (value: number): ColorBase => {
+    darken = (value: number): Color => {
         return this.subtract('lightness', value);
     }
 
-    lighten = (value: number): ColorBase => {
+    lighten = (value: number): Color => {
         return this.add('lightness', value);
     }
 
-    desaturate = (value: number): ColorBase => {
+    desaturate = (value: number): Color => {
         return this.subtract('saturation', value);
     }
 
-    saturate(value: number): ColorBase {
+    saturate(value: number): Color {
         return this.add('saturation', value);
     }
 
@@ -120,119 +123,114 @@ class ColorBase {
         });
     }
 
-    hex = (hex?: string): string | ColorBase => {
+    name = (name?: string): string | Color => {
+        if (name === undefined) return this.#props.name as string;
+        return new Color(parseHEX({ ...this.#props, name, hex: NAMES[name] } as HEX));
+    }
+
+    int = (int?: number): number | Color => {
+        if (!isINT(this.#props)) this.#computeINT();
+        if (int === undefined) return this.#props.int as number;
+        return new Color(parseINT({ ...this.#props, int } as INT));
+    }
+
+    hex = (hex?: string): string | Color => {
         if (!isHEX(this.#props)) this.#computeHEX();
         if (hex === undefined) return this.#props.hex as string;
-        return new ColorHEX({ ...this.#props, hex } as HEX);
+        return new Color(parseHEX({ ...this.#props, hex } as HEX));
     }
 
-    name = (name?: string): string | ColorBase => {
-        if (name === undefined) return this.#props.name as string;
-        return new ColorHEX({ ...this.#props, name, hex: NAMES[name] } as HEX);
-    }
-
-    red = (red?: number): number | ColorBase => {
+    red = (red?: number): number | Color => {
         if (!isRGB(this.#props)) this.#computeRGB();
         if (red === undefined) return this.#props.red as number;
-        return new ColorRGB({ ...this.#props, red } as RGB);
+        return new Color(parseRGB({ ...this.#props, red } as RGB));
     }
 
-    green = (green?: number): number | ColorBase => {
+    green = (green?: number): number | Color => {
         if (!isRGB(this.#props)) this.#computeRGB();
         if (green === undefined) return this.#props.green as number;
-        return new ColorRGB({ ...this.#props, green } as RGB);
+        return new Color(parseRGB({ ...this.#props, green } as RGB));
     }
 
-    blue = (blue?: number): number | ColorBase => {
+    blue = (blue?: number): number | Color => {
         if (!isRGB(this.#props)) this.#computeRGB();
         if (blue === undefined) return this.#props.blue as number;
-        return new ColorRGB({ ...this.#props, blue } as RGB);
+        return new Color(parseRGB({ ...this.#props, blue } as RGB));
     }
 
-    hue = (hue?: number): number | ColorBase => {
+    hue = (hue?: number): number | Color => {
         if (!isHSL(this.#props) && !isHWB(this.#props)) this.#computeHSL();
         if (hue === undefined) return this.#props.hue as number;
-        if (isHWB(this.#props)) return new ColorHWB({ ...this.#props, hue } as HWB);
-        return new ColorHSL({ ...this.#props, hue } as HSL);
+        if (isHWB(this.#props)) return new Color(parseHWB({ ...this.#props, hue } as HWB));
+        return new Color(parseHSL({ ...this.#props, hue } as HSL));
     }
 
-    saturation = (saturation?: number): number | ColorBase => {
-        if (!isHSL(this.#props)) this.#computeHSL();
-        if (saturation === undefined) return this.#props.saturation as number;
-        return new ColorHSL({ ...this.#props, saturation } as HSL);
-    }
-
-    lightness = (lightness?: number): number | ColorBase => {
-        if (!isHSL(this.#props)) this.#computeHSL();
-        if (lightness === undefined) return this.#props.lightness as number;
-        return new ColorHSL({ ...this.#props, lightness } as HSL);
-    }
-
-    whiteness = (whiteness?: number): number | ColorBase => {
-        if (!isHWB(this.#props) && !isNCOL(this.#props)) this.#computeHWB();
-        if (whiteness === undefined) return this.#props.whiteness as number;
-        if (isNCOL(this.#props)) return new ColorNCOL({ ...this.#props, whiteness } as NCOL);
-        return new ColorHWB({ ...this.#props, whiteness } as HWB);
-    }
-
-    blackness = (blackness?: number): number | ColorBase => {
-        if (!isHWB(this.#props) && !isNCOL(this.#props)) this.#computeHWB();
-        if (blackness === undefined) return this.#props.blackness as number;
-        if (isNCOL(this.#props)) return new ColorNCOL({ ...this.#props, blackness } as NCOL);
-        return new ColorHWB({ ...this.#props, blackness } as HWB);
-    }
-
-    cyan = (cyan?: number): number | ColorBase => {
-        if (!isCMYK(this.#props)) this.#computeCMYK();
-        if (cyan === undefined) return this.#props.cyan as number;
-        return new ColorCMYK({ ...this.#props, cyan } as CMYK);
-    }
-
-    magenta = (magenta?: number): number | ColorBase => {
-        if (!isCMYK(this.#props)) this.#computeCMYK();
-        if (magenta === undefined) return this.#props.magenta as number;
-        return new ColorCMYK({ ...this.#props, magenta } as CMYK);
-    }
-
-    yellow = (yellow?: number): number | ColorBase => {
-        if (!isCMYK(this.#props)) this.#computeCMYK();
-        if (yellow === undefined) return this.#props.yellow as number;
-        return new ColorCMYK({ ...this.#props, yellow } as CMYK);
-    }
-
-    black = (black?: number): number | ColorBase => {
-        if (!isCMYK(this.#props)) this.#computeCMYK();
-        if (black === undefined) return this.#props.black as number;
-        return new ColorCMYK({ ...this.#props, black } as CMYK);
-    }
-
-    ncol = (ncol?: string): string | ColorBase => {
+    ncol = (ncol?: string): string | Color => {
         if (!isNCOL(this.#props)) this.#computeNCOL();
         if (ncol === undefined) return this.#props.ncol as string;
-        return new ColorNCOL({ ...this.#props, ncol } as NCOL);
+        return new Color(parseNCOL({ ...this.#props, ncol } as NCOL));
     }
 
-    alpha = (alpha?: number): number | ColorBase => {
+    cyan = (cyan?: number): number | Color => {
+        if (!isCMYK(this.#props)) this.#computeCMYK();
+        if (cyan === undefined) return this.#props.cyan as number;
+        return new Color(parseCMYK({ ...this.#props, cyan } as CMYK));
+    }
+
+    magenta = (magenta?: number): number | Color => {
+        if (!isCMYK(this.#props)) this.#computeCMYK();
+        if (magenta === undefined) return this.#props.magenta as number;
+        return new Color(parseCMYK({ ...this.#props, magenta } as CMYK));
+    }
+
+    yellow = (yellow?: number): number | Color => {
+        if (!isCMYK(this.#props)) this.#computeCMYK();
+        if (yellow === undefined) return this.#props.yellow as number;
+        return new Color(parseCMYK({ ...this.#props, yellow } as CMYK));
+    }
+
+    white = (white?: number): number | Color => {
+        if (!isHWB(this.#props) && !isNCOL(this.#props)) this.#computeHWB();
+        if (white === undefined) return this.#props.white as number;
+        if (isNCOL(this.#props)) return new Color(parseNCOL({ ...this.#props, white } as NCOL));
+        return new Color(parseHWB({ ...this.#props, white } as HWB));
+    }
+
+    black = (black?: number): number | Color => {
+        if (!isHWB(this.#props) && !isNCOL(this.#props)) this.#computeHWB();
+        if (black === undefined) return this.#props.black as number;
+        if (isNCOL(this.#props)) return new Color(parseNCOL({ ...this.#props, black } as NCOL));
+        return new Color(parseHWB({ ...this.#props, black } as HWB));
+    }
+
+    saturation = (saturation?: number): number | Color => {
+        if (!isHSL(this.#props)) this.#computeHSL();
+        if (saturation === undefined) return this.#props.saturation as number;
+        if (saturation === 0) return new Color(parseHSL({ ...this.#props, hue: 0.0, saturation } as HSL));
+        return new Color(parseHSL({ ...this.#props, saturation } as HSL));
+    }
+
+    lightness = (lightness?: number): number | Color => {
+        if (!isHSL(this.#props)) this.#computeHSL();
+        if (lightness === undefined) return this.#props.lightness as number;
+        return new Color(parseHSL({ ...this.#props, lightness } as HSL));
+    }
+
+    alpha = (alpha?: number): number | Color => {
         if (alpha === undefined) return this.#props.alpha as number;
-        if (isINT(this.#props)) return new ColorINT({ ...this.#props, alpha } as INT);
-        if (isHEX(this.#props)) return new ColorHEX({ ...this.#props, alpha } as HEX);
-        if (isRGB(this.#props)) return new ColorRGB({ ...this.#props, alpha } as RGB);
-        if (isHSL(this.#props)) return new ColorHSL({ ...this.#props, alpha } as HSL);
-        if (isHWB(this.#props)) return new ColorHWB({ ...this.#props, alpha } as HWB);
-        if (isNCOL(this.#props)) return new ColorNCOL({ ...this.#props, alpha } as NCOL);
-        if (isCMYK(this.#props)) return new ColorCMYK({ ...this.#props, alpha } as CMYK);
+        if (isINT(this.#props)) return new Color(parseINT({ ...this.#props, alpha } as INT));
+        if (isHEX(this.#props)) return new Color(parseHEX({ ...this.#props, alpha } as HEX));
+        if (isRGB(this.#props)) return new Color(parseRGB({ ...this.#props, alpha } as RGB));
+        if (isHSL(this.#props)) return new Color(parseHSL({ ...this.#props, alpha } as HSL));
+        if (isHWB(this.#props)) return new Color(parseHWB({ ...this.#props, alpha } as HWB));
+        if (isNCOL(this.#props)) return new Color(parseNCOL({ ...this.#props, alpha } as NCOL));
+        if (isCMYK(this.#props)) return new Color(parseCMYK({ ...this.#props, alpha } as CMYK));
 
         this.#computeRGB();
-        return new ColorRGB({ ...this.#props, alpha: alpha } as RGB);
+        return new Color(parseRGB({ ...this.#props, alpha: alpha } as RGB));
     }
 
-    value = (value?: number): number | ColorBase => {
-        if (!isINT(this.#props)) this.#computeINT();
-        if (value === undefined) return this.#props.value as number;
-        return new ColorINT({ ...this.#props, value } as INT);
-    }
-
-    cmyk = (value?: string | CMYK): string | ColorBase => {
+    cmyk = (value?: string | [number, number, number, number] | CMYK): string | Color => {
         if (value === undefined) {
             if (!isCMYK(this.#props)) this.#computeCMYK();
             return stringifyCMYK(this.#props as CMYK);
@@ -240,7 +238,7 @@ class ColorBase {
         return new ColorCMYK(parseCMYK(value));
     }
 
-    hsl = (value?: string | HSL): string | ColorBase => {
+    hsl = (value?: string | [number, number, number] | HSL): string | Color => {
         if (value === undefined) {
             if (!isHSL(this.#props)) this.#computeHSL();
             return stringifyHSL(this.#props as HSL);
@@ -248,7 +246,7 @@ class ColorBase {
         return new ColorHSL(parseHSL(value));
     }
 
-    hwb = (value?: string | HWB): string | ColorBase => {
+    hwb = (value?: string | [number, number, number] | HWB): string | Color => {
         if (value === undefined) {
             if (!isHWB(this.#props)) this.#computeHWB();
             return stringifyHWB(this.#props as HWB);
@@ -256,7 +254,7 @@ class ColorBase {
         return new ColorHWB(parseHWB(value));
     }
 
-    rgb = (value?: string | RGB): string | ColorBase => {
+    rgb = (value?: string | [number, number, number] | RGB): string | Color => {
         if (value === undefined) {
             if (!isRGB(this.#props)) this.#computeRGB();
             return stringifyRGB(this.#props as RGB);
@@ -319,54 +317,12 @@ class ColorBase {
     }
 }
 
-class ColorINT extends ColorBase {
-    constructor(props: INT) {
-        super(parseINT(props));
-    }
-}
-
-class ColorHEX extends ColorBase {
-    constructor(props: HEX) {
-        super(parseHEX(props));
-    }
-}
-
-class ColorRGB extends ColorBase {
-    constructor(props: RGB) {
-        super(parseRGB(props));
-    }
-}
-
-class ColorHSL extends ColorBase {
-    constructor(props: HSL) {
-        super(parseHSL(props));
-    }
-}
-
-class ColorHWB extends ColorBase {
-    constructor(props: HWB) {
-        super(parseHWB(props));
-    }
-}
-
-class ColorNCOL extends ColorBase {
-    constructor(props: NCOL) {
-        super(parseNCOL(props));
-    }
-}
-
-class ColorCMYK extends ColorBase {
-    constructor(props: CMYK) {
-        super(parseCMYK(props));
-    }
-}
-
-export default class Color extends ColorBase {
-    static create(props: COLOR_INPUT|ColorBase, format?: string): Color {
-        if (props instanceof ColorBase) {
-            return new Color(props.toString());
+export default class ColorProxy extends Color {
+    static create(props: COLOR_INPUT|Color, format?: string): ColorProxy {
+        if (props instanceof Color) {
+            return new ColorProxy(props.toString());
         }
-        return new Color(props, format);
+        return new ColorProxy(props, format);
     }
 
     constructor(props: COLOR_INPUT, format?: string) {
@@ -375,8 +331,8 @@ export default class Color extends ColorBase {
     }
 }
 
-// type STATIC_METHODS ='get'|'set'|'add'|'subtract'|'multiply'|'divide'|'scale'|'invert'|'grayscale'|'opacify'|'transparentize'|'darken'|'lighten'|'desaturate'|'saturate'|'mix'|'hex'|'name'|'value'|'red'|'green'|'blue'|'hue'|'saturation'|'lightness'|'ncol'|'whiteness'|'blackness'|'cyan'|'magenta'|'yellow'|'black'|'alpha'|'rgb'|'hsl'|'hwb'|'toNumber'|'toString'|'toJSON';
-// const STATIC_KEYS: STATIC_METHODS[] = ['get','set','add','subtract','multiply','divide','scale','invert','grayscale','opacify','transparentize','darken','lighten','desaturate','saturate','mix','hex','name','value','red','green','blue','hue','saturation','lightness','ncol','whiteness','blackness','cyan','magenta','yellow','black','alpha','rgb','hsl','hwb','toNumber','toString','toJSON'];
+// type STATIC_METHODS ='get'|'set'|'add'|'subtract'|'multiply'|'divide'|'scale'|'invert'|'grayscale'|'opacify'|'transparentize'|'darken'|'lighten'|'desaturate'|'saturate'|'mix'|'hex'|'name'|'value'|'red'|'green'|'blue'|'hue'|'saturation'|'lightness'|'ncol'|'white'|'black'|'cyan'|'magenta'|'yellow'|'black'|'alpha'|'rgb'|'hsl'|'hwb'|'toNumber'|'toString'|'toJSON';
+// const STATIC_KEYS: STATIC_METHODS[] = ['get','set','add','subtract','multiply','divide','scale','invert','grayscale','opacify','transparentize','darken','lighten','desaturate','saturate','mix','hex','name','value','red','green','blue','hue','saturation','lightness','ncol','white','black','cyan','magenta','yellow','black','alpha','rgb','hsl','hwb','toNumber','toString','toJSON'];
 //
 // for (let idx = 0; idx < STATIC_KEYS.length; idx++) {
 //     const key = STATIC_KEYS[idx];
