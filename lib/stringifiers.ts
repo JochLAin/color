@@ -6,12 +6,12 @@ export const stringifyCMYK = (props: CMYK): string => {
 };
 
 export const stringifyHSL = (props: HSL): string => {
-    const { hue, saturation, lightness, alpha = 100 } = props;
+    const { hue, saturation_hsl, lightness, alpha = 100 } = props;
 
     if (alpha !== 100) {
-        return `hsla(${Math.round(hue)}, ${Math.round(saturation)}%, ${Math.round(lightness)}%, ${Math.round(alpha)}%)`;
+        return `hsla(${Math.round(hue)}, ${Math.round(saturation_hsl)}%, ${Math.round(lightness)}%, ${Math.round(alpha)}%)`;
     }
-    return `hsl(${Math.round(hue)}, ${Math.round(saturation)}%, ${Math.round(lightness)}%)`;
+    return `hsl(${Math.round(hue)}, ${Math.round(saturation_hsl)}%, ${Math.round(lightness)}%)`;
 };
 
 export const stringifyHWB = (props: HWB): string => {

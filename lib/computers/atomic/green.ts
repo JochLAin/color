@@ -32,3 +32,9 @@ export const fromHSV = (
 ): number => {
     return getChannelRGBFromHSV(3, hue, saturation_hsv, brightness);
 };
+
+export const fromINT = (
+    int: number,
+): number => {
+    return (int & 0xFF00) / 0xFF;
+};

@@ -4,8 +4,35 @@ import Color from "./models";
 import { COLOR_INPUT, HSL, RGB } from "./types";
 import { isSCMYK, isCMYK, isHEX, isSHSL, isHSL, isSHWB, isHWB, isINT, isNCOL, isSRGB, isRGB } from "./utils";
 
-export const paint = (props: COLOR_INPUT, format: string = 'rgb') => {
-    return Color.create(props, format);
+const _isCMYK = (args: any) => isCMYK(args) || isSCMYK(args);
+const _isHSL = (args: any) => isHSL(args) || isSHSL(args);
+const _isHWB = (args: any) => isHWB(args) || isSHWB(args);
+const _isRGB = (args: any) => isRGB(args) || isSRGB(args);
+
+export default Color.create;
+
+export {
+    Color,
+
+    createHEX,
+    createHSL,
+    createRGB,
+
+    HEX_REGEX,
+    HSL_REGEX,
+    HWB_REGEX,
+    RGB_REGEX,
+
+    NAMES,
+    HEX_NAMES,
+
+    isHEX,
+    isINT,
+    isNCOL,
+    _isCMYK as isCMYK,
+    _isHSL as isHSL,
+    _isHWB as isHWB,
+    _isRGB as isRGB,
 };
 
 export const random = (format?: string, props?: COLOR_INPUT): Color => {
@@ -15,30 +42,3 @@ export const random = (format?: string, props?: COLOR_INPUT): Color => {
         default: return new Color(createHEX());
     }
 };
-
-Object.assign(paint, {
-    HEX_REGEX,
-    HSL_REGEX,
-    HWB_REGEX,
-    RGB_REGEX,
-    NAMES,
-    HEX_NAMES,
-    Color,
-    createHEX,
-    createHSL,
-    createRGB,
-});
-
-Object.assign(paint, {
-    isHEX,
-    isINT,
-    isNCOL,
-    isCMYK: (args: any) => isCMYK(args) || isSCMYK(args),
-    isHSL: (args: any) => isHSL(args) || isSHSL(args),
-    isHWB: (args: any) => isHWB(args) || isSHWB(args),
-    isRGB: (args: any) => isRGB(args) || isSRGB(args),
-});
-
-Object.assign(paint, { random });
-
-export default paint;

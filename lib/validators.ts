@@ -1,4 +1,6 @@
-const getValidValue = (param?: string|number, max: number = 1.0, modulo: boolean = false, min: number = 0.0): number => {
+import { CMYK, HWB, HSL, RGB } from "./types";
+
+export default function getValidValue(param?: string|number, max: number = 1.0, modulo: boolean = false, min: number = 0.0): number {
     let value = param;
     if (!value) return 0;
 
@@ -20,8 +22,39 @@ const getValidValue = (param?: string|number, max: number = 1.0, modulo: boolean
     return Math.round(value * P) / P;
 };
 
-export default getValidValue;
-
-export const getValidAlpha = (alpha?: number): number => {
+export function getValidAlpha(alpha?: number): number {
     return getValidValue(alpha === undefined ? 1.0 : alpha);
+}
+
+export function getValidCMYK(cmyk: CMYK): CMYK {
+    return {
+        cyan: getValidValue(cmyk.cyan),
+        magenta: getValidValue(cmyk.magenta),
+        yellow: getValidValue(cmyk.yellow),
+        black: getValidValue(cmyk.black),
+    };
+}
+
+export function getValidHWB(hwb: HWB): HWB {
+    return {
+        hue: getValidValue(hwb.hue),
+        white: getValidValue(hwb.white),
+        black: getValidValue(hwb.black),
+    };
+}
+
+export function getValidHSL(hsl: HSL): HSL {
+    return {
+        hue: getValidValue(hsl.hue),
+        saturation_hsl: getValidValue(hsl.saturation_hsl),
+        lightness: getValidValue(hsl.lightness),
+    };
+}
+
+export function getValidRGB(rgb: RGB): RGB {
+    return {
+        red: getValidValue(rgb.red),
+        blue: getValidValue(rgb.blue),
+        green: getValidValue(rgb.green),
+    };
 }
