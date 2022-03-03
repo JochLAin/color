@@ -4,7 +4,7 @@ export const createHEX = (): HEX => ({ hex: `#${(Math.random() * 0xFFFFFF << 0).
 
 export const createHSL = (props?: HSL): HSL => ({
     hue: Number(props?.hue || Number(Math.random() * 360).toFixed(0)),
-    saturation: Number(props?.saturation || Number(Math.random() * 100).toFixed(0)),
+    saturation_hsl: Number(props?.saturation_hsl || Number(Math.random() * 100).toFixed(0)),
     lightness: Number(props?.lightness || Number(Math.random() * 100).toFixed(0)),
 });
 
