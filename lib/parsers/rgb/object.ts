@@ -1,11 +1,11 @@
 import { srgb2rgb } from "../../converters";
-import { RGB, sRGB } from "../../types";
-import { isSRGB } from "../../utils";
+import { RGB_OBJECT, RGB_SHORTCUT } from "../../types";
+import { isShortcutRGB } from "../../testers";
 import { getValidRGB } from "../../validators";
 
-export default (props: RGB | sRGB): RGB => {
-    if (typeof props === 'object' && isSRGB(props)) {
-        props = srgb2rgb(props as sRGB);
+export default (props: RGB_OBJECT | RGB_SHORTCUT): RGB_OBJECT => {
+    if (isShortcutRGB(props)) {
+        return srgb2rgb(props);
     }
-    return getValidRGB(props as RGB);
+    return getValidRGB(props);
 };

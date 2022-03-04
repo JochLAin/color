@@ -1,6 +1,7 @@
-import { RGB, sRGB } from "../../types";
+import { RGB_OBJECT, RGB_SHORTCUT } from "../../types";
+import { getValidRGB } from "../../validators";
 
-export default (props: sRGB): RGB => {
+export default (props: RGB_SHORTCUT): RGB_OBJECT => {
     const { r: red, g: green, b: blue, a: alpha } = props;
-    return { red, green, blue, alpha };
+    return getValidRGB({ red, green, blue, alpha });
 };

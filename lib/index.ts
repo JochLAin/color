@@ -1,6 +1,8 @@
+import { HEX_REGEX, HSL_REGEX, HWB_REGEX, RGB_REGEX, NAMES, HEX_NAMES } from "./constants";
 import Color from "./models";
-import { COLOR_INPUT, HSL, RGB } from "./types";
 import { createHEX, createHSL, createRGB } from "./factories";
+import { COLOR_INPUT, HSL, RGB } from "./types";
+import { isCMYK, isSCMYK, isHEX, isINT, isHSL, isSHSL, isHWB, isSHWB, isNCOL, isRGB, isSRGB } from "./utils";
 
 const _isCMYK = (args: any) => isCMYK(args) || isSCMYK(args);
 const _isHSL = (args: any) => isHSL(args) || isSHSL(args);

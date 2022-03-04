@@ -1,10 +1,10 @@
-import { HSL_REGEX } from "../../constants";
-import { HSL } from "../../types";
+import { HSL_REGEXP_FULL } from "../../constants";
+import { HSL_OBJECT } from "../../types";
 import { getValidHSL } from "../../validators";
 
-export default (props: string): HSL => {
-    const match = props.match(HSL_REGEX);
-    if (!match) throw new Error(`HSL string must match with ${HSL_REGEX.toString()}`);
+export default (props: string): HSL_OBJECT => {
+    const match = props.match(HSL_REGEXP_FULL);
+    if (!match) throw new Error(`HSL string must match with ${HSL_REGEXP_FULL.toString()}`);
 
     return getValidHSL({
         hue: Number(match[1]),

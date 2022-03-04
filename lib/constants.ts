@@ -24,17 +24,43 @@ const DEFAULT_COLOR: COLOR = {
 
 export default DEFAULT_COLOR;
 
-export const RGB_REGEX = /^rgba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*[,\s]\s*([\d.]+)\s*([,/]\s*([\d.]+)%?\s*)?\)$/i;
-export const HSL_REGEX = /^hsla?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)%?\s*[,\s]\s*([\d.]+)%?\s*([,/]\s*([\d.]+)%?\s*)?\)$/i;
-export const HWB_REGEX = /^hwba?\(\s*([\d.]+)\s*[,\s]\s*([\d.]+)%?\s*[,\s]\s*([\d.]+)%?\s*([,/]\s*([\d.]+)%?\s*)?\)$/i;
-export const HEX_REGEX = /^#([0-9a-f]+)$/i;
-
 export const HEX_MAX_VALUE = 0xFFFFFF;
 export const YIQ_THRESHOLD = 0.6;
 export const DARK = true;
 export const LIGHT = false;
 
-export const NAMES = {
+export const HEX_REGEXP = /^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+
+export const INTEGER_REGEXP = /^([-+]?[0-9]+)$/i;
+const int_source = INTEGER_REGEXP.source.slice(1, -1);
+export const NUMBER_REGEXP = new RegExp(`^(${int_source}|(${int_source})?.\\d+|${int_source}e${int_source}|(${int_source})?.\\d+e${int_source})$`, 'i');
+const num_source = NUMBER_REGEXP.source.slice(1, -1);
+export const PERCENTAGE_REGEXP = new RegExp(`^(${num_source}%)$`, 'i');
+const per_source = PERCENTAGE_REGEXP.source.slice(1, -1);
+export const ALPHA_REGEXP = new RegExp(`^(${per_source}|${num_source})$`, 'i');
+const alf_source = ALPHA_REGEXP.source.slice(1, -1);
+export const ANGLE_REGEXP = new RegExp(`^(0|${num_source}(${['deg', 'grad', 'rad', 'turn'].join('|')})?)$`, 'i');
+const ang_source = ANGLE_REGEXP.source.slice(1, -1);
+
+export const HSL_REGEXP = new RegExp(`^hsl\\(\\s*(${ang_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
+export const HSL_SPACE_REGEXP = new RegExp(`^hsl\\(\\s*(${ang_source})\\s+(${alf_source})\\s+(${alf_source})\\s*\\)$`, 'i');
+export const HSLA_REGEXP = new RegExp(`^hsla\\(\\s*(${ang_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
+export const HSLA_SPACE_REGEXP = new RegExp(`^hsla\\(\\s*(${ang_source})\\s+(${alf_source})\\s+(${alf_source})\\s*/\\s*(${alf_source})\\s*\\)$`, 'i');
+export const HSL_REGEXP_FULL = new RegExp(`^(${[HSL_REGEXP, HSL_SPACE_REGEXP, HSLA_REGEXP, HSLA_SPACE_REGEXP].map((regexp) => regexp.source.slice(1, -1)).join('|')})$`);
+
+export const HWB_REGEXP = new RegExp(`^hwb\\(\\s*(${ang_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
+export const HWB_SPACE_REGEXP = new RegExp(`^hwb\\(\\s*(${ang_source})\\s+(${alf_source})\\s+(${alf_source})\\s*\\)$`, 'i');
+export const HWBA_REGEXP = new RegExp(`^hwba\\(\\s*(${ang_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
+export const HWBA_SPACE_REGEXP = new RegExp(`^hwba\\(\\s*(${ang_source})\\s+(${alf_source})\\s+(${alf_source})\\s*/\\s*(${alf_source})\\s*\\)$`, 'i');
+export const HWB_REGEXP_FULL = new RegExp(`^(${[HWB_REGEXP, HWB_SPACE_REGEXP, HWBA_REGEXP, HWBA_SPACE_REGEXP].map((regexp) => regexp.source.slice(1, -1)).join('|')})$`);
+
+export const RGB_REGEXP = new RegExp(`^rgb\\(\\s*(${num_source})\\s*,\\s*(${num_source})\\s*,\\s*(${num_source})\\s*\\)$`, 'i');
+export const RGB_SPACE_REGEXP = new RegExp(`^rgb\\(\\s*(${num_source})\\s+(${num_source})\\s+(${num_source})\\s*\\)$`, 'i');
+export const RGBA_REGEXP = new RegExp(`^rgba\\(\\s*(${num_source})\\s*,\\s*(${num_source})\\s*,\\s*(${num_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
+export const RGBA_SPACE_REGEXP = new RegExp(`^rgba\\(\\s*(${num_source})\\s+(${num_source})\\s+(${num_source})\\s*/\\s*(${alf_source})\\s*\\)$`, 'i');
+export const RGB_REGEXP_FULL = new RegExp(`^(${[RGB_REGEXP, RGB_SPACE_REGEXP, RGBA_REGEXP, RGBA_SPACE_REGEXP].map((regexp) => regexp.source.slice(1, -1)).join('|')})$`);
+
+export const NAMES: { [key: string]: string } = {
     aliceblue: "#F0F8FF",
     antiquewhite: "#FAEBD7",
     aqua: "#0FF",
@@ -187,4 +213,4 @@ export const NAMES = {
 };
 
 // Reversed key-value of NAMES
-export const HEX_NAMES = Object.entries(NAMES).reduce((accu, [name, value]) => ({ ...accu, [value]: name }), {});
+export const HEX_NAMES: { [key: string]: string } = Object.entries(NAMES).reduce((accu, [name, value]) => ({ ...accu, [value]: name }), {});

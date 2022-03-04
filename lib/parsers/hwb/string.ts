@@ -1,10 +1,10 @@
-import { HWB } from "../../types";
-import { HWB_REGEX } from "../../constants";
+import { HWB_OBJECT } from "../../types";
+import { HWB_REGEXP_FULL } from "../../constants";
 import { getValidHWB } from "../../validators";
 
-export default (props: string): HWB => {
-    const match = props.match(HWB_REGEX);
-    if (!match) throw new Error(`HWB string must match ${HWB_REGEX.toString()}`);
+export default (props: string): HWB_OBJECT => {
+    const match = props.match(HWB_REGEXP_FULL);
+    if (!match) throw new Error(`HWB string must match ${HWB_REGEXP_FULL.toString()}`);
 
     return getValidHWB({
         hue: Number(match[1]),

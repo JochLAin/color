@@ -1,7 +1,7 @@
-import { HSL } from "../../types";
+import { HSL_ARRAY, HSL_OBJECT } from "../../types";
 import { getValidHSL } from "../../validators";
 
-export default (props: [number, number, number, number?]): HSL => {
+export default (props: HSL_ARRAY): HSL_OBJECT => {
     const [hue, saturation, lightness, alpha] = props;
     return getValidHSL({ hue, saturation, lightness, alpha });
 };

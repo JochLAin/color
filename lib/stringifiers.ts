@@ -1,20 +1,24 @@
 import { CMYK, HSL, HWB, RGB } from "./types";
+import { isCMYK, isHSL, isHWB, isRGB } from "./utils";
 
 export const stringifyCMYK = (props: CMYK): string => {
+    if (!isCMYK(props)) throw new Error(`Not a valid CMYK => ${JSON.stringify(props)}`);
     const { cyan, magenta, yellow, black } = props;
     return `cmyk(${Math.round(cyan)}%, ${Math.round(magenta)}%, ${Math.round(yellow)}%, ${Math.round(black)}%)`;
 };
 
 export const stringifyHSL = (props: HSL): string => {
-    const { hue, saturation_hsl, lightness, alpha = 100 } = props;
+    if (!isHSL(props)) throw new Error(`Not a valid HSL => ${JSON.stringify(props)}`);
+    const { hue, saturation, lightness, alpha = 100 } = props;
 
     if (alpha !== 100) {
-        return `hsla(${Math.round(hue)}, ${Math.round(saturation_hsl)}%, ${Math.round(lightness)}%, ${Math.round(alpha)}%)`;
+        return `hsla(${Math.round(hue)}, ${Math.round(saturation)}%, ${Math.round(lightness)}%, ${Math.round(alpha)}%)`;
     }
-    return `hsl(${Math.round(hue)}, ${Math.round(saturation_hsl)}%, ${Math.round(lightness)}%)`;
+    return `hsl(${Math.round(hue)}, ${Math.round(saturation)}%, ${Math.round(lightness)}%)`;
 };
 
 export const stringifyHWB = (props: HWB): string => {
+    if (!isHWB(props)) throw new Error(`Not a valid HWB => ${JSON.stringify(props)}`);
     const { hue, white, black, alpha = 100 } = props;
 
     if (alpha !== 100) {
@@ -24,6 +28,7 @@ export const stringifyHWB = (props: HWB): string => {
 };
 
 export const stringifyRGB = (props: RGB): string => {
+    if (!isRGB(props)) throw new Error(`Not a valid RGB => ${JSON.stringify(props)}`);
     const { red, green, blue, alpha = 100 } = props;
 
     if (alpha !== 100) {

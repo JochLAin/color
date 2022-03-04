@@ -1,6 +1,7 @@
-import { HSL, sHSL } from "../../types";
+import { HSL_OBJECT, HSL_SHORTCUT } from "../../types";
+import { getValidHSL } from "../../validators";
 
-export default (props: sHSL): HSL => {
+export default (props: HSL_SHORTCUT): HSL_OBJECT => {
     const { h: hue, s: saturation, l: lightness, a: alpha } = props;
-    return { hue, saturation, lightness, alpha };
+    return getValidHSL({ hue, saturation, lightness, alpha });
 };

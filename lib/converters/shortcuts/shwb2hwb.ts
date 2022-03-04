@@ -1,6 +1,7 @@
-import { HWB, sHWB } from "../../types";
+import { HWB_OBJECT, HWB_SHORTCUT } from "../../types";
+import { getValidHWB } from "../../validators";
 
-export default (props: sHWB): HWB => {
+export default (props: HWB_SHORTCUT): HWB_OBJECT => {
     const { h: hue, w: white, b: black, a: alpha } = props;
-    return { hue, white, black, alpha };
+    return getValidHWB({ hue, white, black, alpha });
 };
