@@ -1,6 +1,6 @@
 import { HWB_OBJECT } from "../../types";
 import { HWB_REGEXP_FULL } from "../../constants";
-import { getValidHWB } from "../../validators";
+import { getValidHWB } from "../../normalizers";
 
 export default (props: string): HWB_OBJECT => {
     const match = props.match(HWB_REGEXP_FULL);

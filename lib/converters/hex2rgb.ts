@@ -1,6 +1,6 @@
 import { HEX_REGEX } from "../constants";
 import { COLOR, HEX, RGB } from "../types";
-import { getValidRGB } from "../validators";
+import { getValidRGB } from "../normalizers";
 
 export default (props: COLOR & HEX): RGB => {
     const match = props.hex.match(HEX_REGEX);

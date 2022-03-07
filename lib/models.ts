@@ -4,7 +4,7 @@ import parse, { parseCMYK, parseHEX, parseHSL, parseHWB, parseINT, parseNCOL, pa
 import { stringifyCMYK, stringifyHSL, stringifyHWB, stringifyRGB } from "./stringifiers";
 import { COLOR, COLOR_INPUT, CMYK, HEX, HSL, HWB, INT, NCOL, RGB, PROPERTY_MATH } from "./types";
 import { isCMYK, isHEX, isHSL, isHWB, isINT, isNCOL, isRGB } from "./utils";
-import getValidValue from "./validators";
+import getValidValue from "./normalizers";
 
 const PRECISION = 10;
 

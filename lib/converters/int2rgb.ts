@@ -1,5 +1,5 @@
 import { COLOR, INT, RGB } from "../types";
-import { getValidRGB } from "../validators";
+import { getValidRGB } from "../normalizers";
 
 export default (props: COLOR & INT): RGB => {
     return getValidRGB({

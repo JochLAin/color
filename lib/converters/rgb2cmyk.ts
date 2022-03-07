@@ -1,5 +1,5 @@
 import { CMYK, COLOR, RGB } from "../types";
-import { getValidCMYK } from "../validators";
+import { getValidCMYK } from "../normalizers";
 
 export default (props: COLOR & RGB): CMYK => {
     let { red, green, blue } = props;

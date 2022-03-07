@@ -1,6 +1,6 @@
 import { RGB_OBJECT } from "../../types";
 import { RGB_REGEXP_FULL } from "../../constants";
-import { getValidRGB } from "../../validators";
+import { getValidRGB } from "../../normalizers";
 
 export default (props: string): RGB_OBJECT => {
     const match = props.match(RGB_REGEXP_FULL);

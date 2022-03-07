@@ -1,6 +1,6 @@
 import { HSL_REGEXP_FULL } from "../../constants";
 import { HSL_OBJECT } from "../../types";
-import { getValidHSL } from "../../validators";
+import { getValidHSL } from "../../normalizers";
 
 export default (props: string): HSL_OBJECT => {
     const match = props.match(HSL_REGEXP_FULL);

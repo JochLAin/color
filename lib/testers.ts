@@ -1,5 +1,7 @@
 import { ANGLE_REGEXP, ALPHA_REGEXP, NUMBER_REGEXP, HEX_REGEXP, HSL_REGEXP_FULL, HWB_REGEXP_FULL, RGB_REGEXP_FULL } from "./constants";
-import { HEX, HEX_ARRAY, HEX_OBJECT, HEX_SHORTCUT, HSL, HSL_ARRAY, HSL_OBJECT, HSL_SHORTCUT, HWB, HWB_ARRAY, HWB_OBJECT, HWB_SHORTCUT, RGB, RGB_ARRAY, RGB_OBJECT, RGB_SHORTCUT } from "./types";
+import { COLOR_INPUT, HEX, HEX_ARRAY, HEX_OBJECT, HEX_SHORTCUT, HSL, HSL_ARRAY, HSL_OBJECT, HSL_SHORTCUT, HWB, HWB_ARRAY, HWB_OBJECT, HWB_SHORTCUT, RGB, RGB_ARRAY, RGB_OBJECT, RGB_SHORTCUT } from "./types";
+
+export default (props: any): props is COLOR_INPUT => isHEX(props) || isHSL(props) || isHWB(props) || isRGB(props);
 
 /************************************/
 /*               HEX                */

@@ -2,12 +2,7 @@ import { HEX_REGEX, HSL_REGEX, HWB_REGEX, RGB_REGEX, NAMES, HEX_NAMES } from "./
 import Color from "./models";
 import { createHEX, createHSL, createRGB } from "./factories";
 import { COLOR_INPUT, HSL, RGB } from "./types";
-import { isCMYK, isSCMYK, isHEX, isINT, isHSL, isSHSL, isHWB, isSHWB, isNCOL, isRGB, isSRGB } from "./utils";
-
-const _isCMYK = (args: any) => isCMYK(args) || isSCMYK(args);
-const _isHSL = (args: any) => isHSL(args) || isSHSL(args);
-const _isHWB = (args: any) => isHWB(args) || isSHWB(args);
-const _isRGB = (args: any) => isRGB(args) || isSRGB(args);
+import isColor, { isHEX, isHSL, isHWB, isRGB } from "./testers";
 
 export default Color.create;
 
@@ -26,13 +21,11 @@ export {
     NAMES,
     HEX_NAMES,
 
+    isColor,
     isHEX,
-    isINT,
-    isNCOL,
-    _isCMYK as isCMYK,
-    _isHSL as isHSL,
-    _isHWB as isHWB,
-    _isRGB as isRGB,
+    isHSL,
+    isHWB,
+    isRGB,
 };
 
 export const random = (format?: string, props?: COLOR_INPUT): Color => {

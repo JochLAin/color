@@ -1,5 +1,5 @@
 import { COLOR, HWB, NCOL } from "../types";
-import { getValidHWB } from "../validators";
+import { getValidHWB } from "../normalizers";
 
 export default (props: COLOR & NCOL): HWB => {
     let { ncol, white, black } = props;

@@ -1,5 +1,5 @@
 import { COLOR, HSL, RGB } from "../types";
-import { getValidRGB } from "../validators";
+import { getValidRGB } from "../normalizers";
 
 export const hue2rgb = (hue: number, tmp1: number, tmp2: number): number => {
     if (hue < 0.0) hue += 6.0;

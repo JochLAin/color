@@ -1,5 +1,5 @@
 import { RGB_OBJECT, RGB_SHORTCUT } from "../../types";
-import { getValidRGB } from "../../validators";
+import { getValidRGB } from "../../normalizers";
 
 export default (props: RGB_SHORTCUT): RGB_OBJECT => {
     const { r: red, g: green, b: blue, a: alpha } = props;

@@ -1,5 +1,5 @@
 import { COLOR, HWB, RGB } from "../types";
-import { getValidRGB } from "../validators";
+import { getValidRGB } from "../normalizers";
 import hsl2rgb from "./hsl2rgb";
 
 export default (props: COLOR & HWB): RGB => {

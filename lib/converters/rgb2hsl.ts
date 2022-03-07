@@ -1,5 +1,5 @@
 import { COLOR, HSL, RGB } from "../types";
-import { getValidHSL } from "../validators";
+import { getValidHSL } from "../normalizers";
 import rgb2hue from "./rgb2hue";
 
 export default (props: COLOR & RGB, hue?: number): HSL => {

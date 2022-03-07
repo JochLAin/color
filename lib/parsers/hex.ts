@@ -1,6 +1,6 @@
 import { HEX_REGEX } from "../constants";
 import { HEX } from "../types";
-import { getValidAlpha } from "../validators";
+import { getValidAlpha } from "../normalizers";
 
 export default (props: HEX): HEX => {
     const match = props.hex.match(HEX_REGEX);
