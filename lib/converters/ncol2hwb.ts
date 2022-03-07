@@ -1,5 +1,5 @@
 import { COLOR, HWB, NCOL } from "../types";
-import { getValidHWB } from "../normalizers";
+import { normalizeHWB } from "../normalizers";
 
 export default (props: COLOR & NCOL): HWB => {
     let { ncol, white, black } = props;
@@ -8,7 +8,7 @@ export default (props: COLOR & NCOL): HWB => {
     const letter = String(ncol).substr(0, 1).toUpperCase();
     const percent = Number(String(ncol).substr(1) || 0.0);
     if (Number.isNaN(Number(percent))) {
-        return getValidHWB({
+        return normalizeHWB({
             hue: 0.0,
             white: 0.0,
             black: 100.0
@@ -28,5 +28,5 @@ export default (props: COLOR & NCOL): HWB => {
         black = percent / 100.0;
     }
 
-    return getValidHWB({ hue, white, black });
+    return normalizeHWB({ hue, white, black });
 };

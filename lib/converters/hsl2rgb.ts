@@ -1,5 +1,5 @@
 import { COLOR, HSL, RGB } from "../types";
-import { getValidRGB } from "../normalizers";
+import { normalizeRGB } from "../normalizers";
 
 export const hue2rgb = (hue: number, tmp1: number, tmp2: number): number => {
     if (hue < 0.0) hue += 6.0;
@@ -16,19 +16,19 @@ export default (props: COLOR & HSL): RGB => {
 
     if (saturation === 0) {
         const value = lightness * 255.0;
-        return getValidRGB({ red: value, green: value, blue: value });
+        return normalizeRGB({ red: value, green: value, blue: value });
     }
 
     if (lightness === 0) {
-        return getValidRGB({ red: 0.0, green: 0.0, blue: 0.0 });
+        return normalizeRGB({ red: 0.0, green: 0.0, blue: 0.0 });
     }
     if (lightness === 1) {
-        return getValidRGB({ red: 255.0, green: 255.0, blue: 255.0 });
+        return normalizeRGB({ red: 255.0, green: 255.0, blue: 255.0 });
     }
 
     const tmp1 = lightness <= 0.5 ? (lightness * (1 + saturation)) : (lightness + saturation - lightness * saturation);
     const tmp2 = 2.0 * lightness - tmp1;
-    return getValidRGB({
+    return normalizeRGB({
         red: hue2rgb(hue + 2, tmp1, tmp2) * 255.0,
         green: hue2rgb(hue, tmp1, tmp2) * 255.0,
         blue: hue2rgb(hue - 2, tmp1, tmp2) * 255.0,

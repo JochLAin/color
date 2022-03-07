@@ -1,5 +1,5 @@
 import { COLOR, HSL, RGB } from "../types";
-import { getValidHSL } from "../normalizers";
+import { normalizeHSL } from "../normalizers";
 import rgb2hue from "./rgb2hue";
 
 export default (props: COLOR & RGB, hue?: number): HSL => {
@@ -13,7 +13,7 @@ export default (props: COLOR & RGB, hue?: number): HSL => {
 
     const lightness = sum / 2.0;
     if (min === max) {
-        return getValidHSL({
+        return normalizeHSL({
             hue: 0.0,
             saturation: 0.0,
             lightness: lightness * 100.0,
@@ -22,7 +22,7 @@ export default (props: COLOR & RGB, hue?: number): HSL => {
 
     let saturation = delta / (2.0 - delta);
     if (lightness < 0.5) saturation = delta / sum;
-    return getValidHSL({
+    return normalizeHSL({
         hue: hue || rgb2hue({ red, green, blue }, min, max),
         saturation: saturation * 100.0,
         lightness: lightness * 100.0,

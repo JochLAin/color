@@ -1,5 +1,5 @@
 import { COLOR, HWB, RGB } from "../types";
-import { getValidRGB } from "../normalizers";
+import { normalizeRGB } from "../normalizers";
 import hsl2rgb from "./hsl2rgb";
 
 export default (props: COLOR & HWB): RGB => {
@@ -19,7 +19,7 @@ export default (props: COLOR & HWB): RGB => {
         values[idx] += white;
     }
 
-    return getValidRGB({
+    return normalizeRGB({
         red: values[0] * 255.0,
         green: values[1] * 255.0,
         blue: values[2] * 255.0,

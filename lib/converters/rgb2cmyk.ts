@@ -1,5 +1,5 @@
 import { CMYK, COLOR, RGB } from "../types";
-import { getValidCMYK } from "../normalizers";
+import { normalizeCMYK } from "../normalizers";
 
 export default (props: COLOR & RGB): CMYK => {
     let { red, green, blue } = props;
@@ -7,7 +7,7 @@ export default (props: COLOR & RGB): CMYK => {
 
     const max = Math.max(red, green, blue);
     if (max === 0) {
-        return getValidCMYK({
+        return normalizeCMYK({
             cyan: 0.0,
             magenta: 0.0,
             yellow: 0.0,
@@ -16,7 +16,7 @@ export default (props: COLOR & RGB): CMYK => {
     }
 
     const black = 1.0 - max;
-    return getValidCMYK({
+    return normalizeCMYK({
         cyan: (1.0 - red - black) / max * 100.0,
         magenta: (1.0 - green - black) / max * 100.0,
         yellow: (1.0 - blue - black) / max * 100.0,

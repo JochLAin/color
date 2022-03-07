@@ -32,32 +32,36 @@ export const LIGHT = false;
 export const HEX_REGEXP = /^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 
 export const INTEGER_REGEXP = /^([-+]?[0-9]+)$/i;
-const int_source = INTEGER_REGEXP.source.slice(1, -1);
-export const NUMBER_REGEXP = new RegExp(`^(${int_source}|(${int_source})?.\\d+|${int_source}e${int_source}|(${int_source})?.\\d+e${int_source})$`, 'i');
-const num_source = NUMBER_REGEXP.source.slice(1, -1);
-export const PERCENTAGE_REGEXP = new RegExp(`^(${num_source}%)$`, 'i');
-const per_source = PERCENTAGE_REGEXP.source.slice(1, -1);
-export const ALPHA_REGEXP = new RegExp(`^(${per_source}|${num_source})$`, 'i');
-const alf_source = ALPHA_REGEXP.source.slice(1, -1);
-export const ANGLE_REGEXP = new RegExp(`^(0|${num_source}(${['deg', 'grad', 'rad', 'turn'].join('|')})?)$`, 'i');
-const ang_source = ANGLE_REGEXP.source.slice(1, -1);
+export const INTEGER_SOURCE = INTEGER_REGEXP.source.slice(2, -2);
+export const NUMBER_REGEXP = new RegExp(`^(${INTEGER_SOURCE}|(?:${INTEGER_SOURCE})?\\.\\d+|${INTEGER_SOURCE}e${INTEGER_SOURCE}|(?:${INTEGER_SOURCE})?\\.\\d+e${INTEGER_SOURCE})$`, 'i');
+export const NUMBER_SOURCE = `(?:${NUMBER_REGEXP.source.slice(2, -2)})`;
+export const PERCENTAGE_REGEXP = new RegExp(`^(${NUMBER_SOURCE}%)$`, 'i');
+export const PERCENTAGE_SOURCE = PERCENTAGE_REGEXP.source.slice(2, -2);
+export const ALPHA_REGEXP = new RegExp(`^(${PERCENTAGE_SOURCE}|${NUMBER_SOURCE})$`, 'i');
+export const ALPHA_SOURCE = `(?:${ALPHA_REGEXP.source.slice(2, -2)})`;
+export const ANGLE_REGEXP = new RegExp(`^(0|${NUMBER_SOURCE}(${['deg', 'grad', 'rad', 'turn'].join('|')})?)$`, 'i');
+export const ANGLE_SOURCE = `(?:${ANGLE_REGEXP.source.slice(2, -2)})`;
+export const ANGLE_DEG_REGEX = new RegExp(`(${NUMBER_SOURCE})(?:°|deg)`, 'i');
+export const ANGLE_RAD_REGEX = new RegExp(`(${NUMBER_SOURCE})rad`, 'i');
+export const ANGLE_GRAD_REGEX = new RegExp(`(${NUMBER_SOURCE})grad`, 'i');
+export const ANGLE_TURN_REGEX = new RegExp(`(${NUMBER_SOURCE})turn`, 'i');
 
-export const HSL_REGEXP = new RegExp(`^hsl\\(\\s*(${ang_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
-export const HSL_SPACE_REGEXP = new RegExp(`^hsl\\(\\s*(${ang_source})\\s+(${alf_source})\\s+(${alf_source})\\s*\\)$`, 'i');
-export const HSLA_REGEXP = new RegExp(`^hsla\\(\\s*(${ang_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
-export const HSLA_SPACE_REGEXP = new RegExp(`^hsla\\(\\s*(${ang_source})\\s+(${alf_source})\\s+(${alf_source})\\s*/\\s*(${alf_source})\\s*\\)$`, 'i');
+export const HSL_REGEXP = new RegExp(`^hsl\\(\\s*(${ANGLE_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*\\)$`, 'i');
+export const HSL_SPACE_REGEXP = new RegExp(`^hsl\\(\\s*(${ANGLE_SOURCE})\\s+(${ALPHA_SOURCE})\\s+(${ALPHA_SOURCE})\\s*\\)$`, 'i');
+export const HSLA_REGEXP = new RegExp(`^hsla\\(\\s*(${ANGLE_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*\\)$`, 'i');
+export const HSLA_SPACE_REGEXP = new RegExp(`^hsla\\(\\s*(${ANGLE_SOURCE})\\s+(${ALPHA_SOURCE})\\s+(${ALPHA_SOURCE})\\s*/\\s*(${ALPHA_SOURCE})\\s*\\)$`, 'i');
 export const HSL_REGEXP_FULL = new RegExp(`^(${[HSL_REGEXP, HSL_SPACE_REGEXP, HSLA_REGEXP, HSLA_SPACE_REGEXP].map((regexp) => regexp.source.slice(1, -1)).join('|')})$`);
 
-export const HWB_REGEXP = new RegExp(`^hwb\\(\\s*(${ang_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
-export const HWB_SPACE_REGEXP = new RegExp(`^hwb\\(\\s*(${ang_source})\\s+(${alf_source})\\s+(${alf_source})\\s*\\)$`, 'i');
-export const HWBA_REGEXP = new RegExp(`^hwba\\(\\s*(${ang_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
-export const HWBA_SPACE_REGEXP = new RegExp(`^hwba\\(\\s*(${ang_source})\\s+(${alf_source})\\s+(${alf_source})\\s*/\\s*(${alf_source})\\s*\\)$`, 'i');
+export const HWB_REGEXP = new RegExp(`^hwb\\(\\s*(${ANGLE_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*\\)$`, 'i');
+export const HWB_SPACE_REGEXP = new RegExp(`^hwb\\(\\s*(${ANGLE_SOURCE})\\s+(${ALPHA_SOURCE})\\s+(${ALPHA_SOURCE})\\s*\\)$`, 'i');
+export const HWBA_REGEXP = new RegExp(`^hwba\\(\\s*(${ANGLE_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*\\)$`, 'i');
+export const HWBA_SPACE_REGEXP = new RegExp(`^hwba\\(\\s*(${ANGLE_SOURCE})\\s+(${ALPHA_SOURCE})\\s+(${ALPHA_SOURCE})\\s*/\\s*(${ALPHA_SOURCE})\\s*\\)$`, 'i');
 export const HWB_REGEXP_FULL = new RegExp(`^(${[HWB_REGEXP, HWB_SPACE_REGEXP, HWBA_REGEXP, HWBA_SPACE_REGEXP].map((regexp) => regexp.source.slice(1, -1)).join('|')})$`);
 
-export const RGB_REGEXP = new RegExp(`^rgb\\(\\s*(${num_source})\\s*,\\s*(${num_source})\\s*,\\s*(${num_source})\\s*\\)$`, 'i');
-export const RGB_SPACE_REGEXP = new RegExp(`^rgb\\(\\s*(${num_source})\\s+(${num_source})\\s+(${num_source})\\s*\\)$`, 'i');
-export const RGBA_REGEXP = new RegExp(`^rgba\\(\\s*(${num_source})\\s*,\\s*(${num_source})\\s*,\\s*(${num_source})\\s*,\\s*(${alf_source})\\s*\\)$`, 'i');
-export const RGBA_SPACE_REGEXP = new RegExp(`^rgba\\(\\s*(${num_source})\\s+(${num_source})\\s+(${num_source})\\s*/\\s*(${alf_source})\\s*\\)$`, 'i');
+export const RGB_REGEXP = new RegExp(`^rgb\\(\\s*(${NUMBER_SOURCE})\\s*,\\s*(${NUMBER_SOURCE})\\s*,\\s*(${NUMBER_SOURCE})\\s*\\)$`, 'i');
+export const RGB_SPACE_REGEXP = new RegExp(`^rgb\\(\\s*(${NUMBER_SOURCE})\\s+(${NUMBER_SOURCE})\\s+(${NUMBER_SOURCE})\\s*\\)$`, 'i');
+export const RGBA_REGEXP = new RegExp(`^rgba\\(\\s*(${NUMBER_SOURCE})\\s*,\\s*(${NUMBER_SOURCE})\\s*,\\s*(${NUMBER_SOURCE})\\s*,\\s*(${ALPHA_SOURCE})\\s*\\)$`, 'i');
+export const RGBA_SPACE_REGEXP = new RegExp(`^rgba\\(\\s*(${NUMBER_SOURCE})\\s+(${NUMBER_SOURCE})\\s+(${NUMBER_SOURCE})\\s*/\\s*(${ALPHA_SOURCE})\\s*\\)$`, 'i');
 export const RGB_REGEXP_FULL = new RegExp(`^(${[RGB_REGEXP, RGB_SPACE_REGEXP, RGBA_REGEXP, RGBA_SPACE_REGEXP].map((regexp) => regexp.source.slice(1, -1)).join('|')})$`);
 
 export const NAMES: { [key: string]: string } = {
