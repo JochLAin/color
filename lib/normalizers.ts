@@ -3,11 +3,11 @@ import { rad2deg, grad2deg, turn2deg } from "./converters/angle";
 import { CMYK_OBJECT, HWB_OBJECT, HSL_OBJECT, RGB_OBJECT } from "./types";
 import { round } from "./utils";
 
-const _alpha = (value: string|number|undefined): number => {
+function _alpha(value: string|number|undefined): number {
     return round(value === undefined ? 1 : value);
-};
+}
 
-const _angle = (value: number|string|undefined): number|string => {
+function _angle(value: number|string|undefined): number|string {
     if (!value) return 0;
 
     const deg_match = String(value).match(ANGLE_DEG_REGEX);
@@ -20,19 +20,26 @@ const _angle = (value: number|string|undefined): number|string => {
     if (turn_match) value = turn2deg(Number(turn_match[1]));
 
     return round(value, 360, true);
-};
+}
 
-const _channel = (value: string|number|undefined): number => {
+function _channel(value: string|number|undefined): number {
     if (!value) return 0;
     return round(value, 255);
-};
+}
 
-const _percent = (value: string|number|undefined): number => {
+function _percent(value: string|number|undefined): number {
     if (!value) return 0;
     const per_match = String(value).match(PERCENTAGE_REGEXP);
     if (per_match) value = Number(per_match[1]);
 
     return round(value, 100);
+}
+
+export {
+    _alpha as normalizeAlpha,
+    _angle as normalizeAngle,
+    _channel as normalizeChannel,
+    _percent as normalizePercent,
 };
 
 export function normalizeCMYK(cmyk: CMYK_OBJECT): CMYK_OBJECT {
