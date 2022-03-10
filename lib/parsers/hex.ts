@@ -2,18 +2,18 @@ import { HEX_REGEX } from "../constants";
 import { HEX } from "../types";
 import { normalizeAlpha } from "../normalizers";
 
-export default (props: HEX): HEX => {
-    const match = props.hex.match(HEX_REGEX);
-    if (!match) throw new Error(`HEX string must match with ${HEX_REGEX.toString()}`);
+export default (value: HEX): HEX => {
+    const match = value.hex.match(HEX_REGEX);
+    if (!match) throw new Error(`Invalid <hex> => ${value}`);
     if ([3, 4].includes(match[1].length)) {
-        props.hex = `#${match[1].split('').map((c) => `${c}${c}`).join('')}`;
+        value.hex = `#${match[1].split('').map((c) => `${c}${c}`).join('')}`;
     }
 
-    if (/^#[\dA-Fa-f]{8}$/.test(props.hex)) {
-        const alpha = normalizeAlpha(Math.round(parseInt(props.hex.substr(7, 2), 16) / 0xFF * 100));
-        let { hex } = props;
+    if (/^#[\dA-Fa-f]{8}$/.test(value.hex)) {
+        const alpha = normalizeAlpha(Math.round(parseInt(value.hex.slice(7), 16) / 0xFF * 100));
+        let { hex } = value;
         if (alpha === 100) hex = hex.slice(0, -2);
         return { hex: hex.toUpperCase(), alpha };
     }
-    return { hex: props.hex.toUpperCase(), alpha: 100 };
+    return { hex: value.hex.toUpperCase(), alpha: 100 };
 };
